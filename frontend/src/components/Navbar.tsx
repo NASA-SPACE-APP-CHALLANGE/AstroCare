@@ -26,10 +26,6 @@ export const Navbar: React.FC = () => {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    useEffect(() => {
-        setMobileOpen(prev => (prev ? false : prev));
-    }, [location.pathname]);
-
     const isLinkActive = (to: string) => {
         if (to === '/') return location.pathname === '/';
         if (to === '/dashboard') return location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/');
@@ -152,6 +148,7 @@ export const Navbar: React.FC = () => {
                             <Link
                                 key={link.to}
                                 to={link.to}
+                                onClick={() => setMobileOpen(false)}
                                 style={{
                                     display: 'block',
                                     padding: '0.75rem 1rem',
@@ -173,7 +170,10 @@ export const Navbar: React.FC = () => {
                     <div style={{ padding: '0.5rem 1rem 1rem' }}>
                         <button
                             className="btn btn-primary w-full"
-                            onClick={() => navigate('/dashboard')}
+                            onClick={() => {
+                                setMobileOpen(false);
+                                navigate('/dashboard');
+                            }}
                         >
                             <Rocket size={15} />
                             Launch Mission Console

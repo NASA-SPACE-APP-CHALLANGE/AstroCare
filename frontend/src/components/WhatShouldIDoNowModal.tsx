@@ -1,5 +1,5 @@
 import React from 'react';
-import { HelpCircle, AlertCircle, CheckCircle2, ChevronRight, X, PhoneCall, Shield } from 'lucide-react';
+import { HelpCircle, CheckCircle2, ChevronRight, X, PhoneCall } from 'lucide-react';
 import { generateWhatShouldIDoNowGuide, type WhatShouldIDoNowGuide } from '@/services/symptomCheckerService';
 
 export const WhatShouldIDoNowModal: React.FC<{

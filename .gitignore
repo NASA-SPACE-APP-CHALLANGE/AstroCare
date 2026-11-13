@@ -26,6 +26,9 @@ dist/
 dist-ssr/
 build/
 *.egg-info/
+installers/linux/pkg-build/
+installers/windows/AstroCare-Windows-Portable/
+installers/macos/AstroCare.app/
 
 # Databases & Runtime State
 *.db

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-    Activity, AlertTriangle, ShieldAlert, CheckCircle2, PhoneCall,
-    Send, X, Info, FileText, ChevronRight
+    ShieldAlert, CheckCircle2,
+    Send, X, ChevronRight
 } from 'lucide-react';
 import {
     evaluateSymptoms,

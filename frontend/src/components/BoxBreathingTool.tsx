@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, RotateCcw, Heart, Info, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, RotateCcw } from 'lucide-react';
 
 export const BoxBreathingTool: React.FC = () => {
     const [isActive, setIsActive] = useState<boolean>(false);

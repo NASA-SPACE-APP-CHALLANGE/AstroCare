@@ -9,7 +9,7 @@ const path = require('node:path');
 const { DatabaseSync } = require('node:sqlite');
 
 const PORT = process.env.PORT || 8000;
-const DB_DIR = path.join(__dirname, 'data');
+const DB_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DB_PATH = path.join(DB_DIR, 'astrocare.db');
 
 if (!fs.existsSync(DB_DIR)) {

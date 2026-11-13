@@ -3,8 +3,8 @@ import {
     Brain, Play, CheckCircle, XCircle,
     Info, RefreshCw,
     Moon, Heart, Radio, ChevronRight, Sparkles,
-    ShieldAlert, AlertTriangle, Activity, CheckCircle2, TrendingDown, ExternalLink,
-    HeartPulse, HelpCircle, BookOpen, Layers
+    ShieldAlert, Activity, ExternalLink,
+    HeartPulse, BookOpen
 } from 'lucide-react';
 import {
     ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -14,7 +14,7 @@ import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import type { AnomalyRunResult, Anomaly, HealthTrendsResponse } from '@/types';
 import { OFFICIAL_SPACEFLIGHT_RISKS, type MultiParameterRisk } from '@/services/riskAssessmentService';
-import { NASA_RISK_MODULES, type NasaRiskModule } from '@/services/nasaRiskService';
+import { NASA_RISK_MODULES } from '@/services/nasaRiskService';
 import { SymptomCheckerModal } from '@/components/SymptomCheckerModal';
 
 const METRIC_LABELS: Record<string, string> = {
@@ -260,7 +260,7 @@ export const AIInsightsPage: React.FC = () => {
                         Anomaly <span className="text-violet">Intelligence</span> & Risk Engine
                     </h2>
                     <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                        Unsupervised Isolation Forest multivariate anomaly detection paired with data-driven clinical risk correlation and structured countermeasure protocols.
+                        Unsupervised Isolation Forest multivariate anomaly detection paired with data-driven clinical risk correlation and structured countermeasure protocols for <strong style={{ color: 'var(--stellar-white)' }}>{activeAstronaut?.name || activeAstronautId}</strong>.
                     </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>

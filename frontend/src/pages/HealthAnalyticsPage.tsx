@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import {
     Activity, Heart, Thermometer, Wind, Moon, Zap, Radio,
-    AlertTriangle, RefreshCw, Info, ChevronRight, CheckCircle2, Dumbbell, Shield, Droplets
+    AlertTriangle, RefreshCw, Info, ChevronRight, CheckCircle2, Dumbbell
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';

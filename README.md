@@ -1,123 +1,102 @@
 # 🚀 AstroCare — Astronaut Health Monitoring System (AstroVital Intelligence Engine)
 
-> **Every Heartbeat. Beyond Earth.**  
-> Built by **Team AlgoX** for the **NASA Space Apps Challenge**.  
-> *Research Prototype Platform — Not a certified medical diagnostic system.*
+<div align="center">
+
+![AstroCare Banner](frontend/public/favicon.svg)
+
+### **Every Heartbeat. Beyond Earth.**
+**Autonomous Aerospace Biomedical Telemetry, AI Anomaly Intelligence & Mission Risk Management**
+
+[![Version](https://img.shields.io/badge/version-2.0.0-00E5FF.svg?style=for-the-badge&logo=rocket)](CHANGELOG.md)
+[![Platform](https://img.shields.io/badge/platform-Linux%20|%20Windows%20|%20macOS-7C3AED.svg?style=for-the-badge)](INSTALLATION.md)
+[![NASA Space Apps](https://img.shields.io/badge/NASA%20Space%20Apps-Challenge%20Project-FF6B6B.svg?style=for-the-badge)](https://www.spaceappschallenge.org)
+[![License](https://img.shields.io/badge/license-MIT-00FF88.svg?style=for-the-badge)](LICENSE)
+
+*Built by **Team AlgoX** for the **NASA Space Apps Challenge**.*  
+*Research Prototype Platform — Designed according to NASA Human Research Program (HRP) Standards.*
+
+</div>
 
 ---
 
 ## 🛰️ 1. Project Overview & Problem Statement
 
-Astronauts on long-duration exploration missions (e.g., Artemis deep-space transits and Mars expeditions) encounter prolonged microgravity, cosmic ionizing radiation, acoustic confinement, and isolated habitats. These space stressors induce cardiovascular deconditioning, cephalad fluid redistribution, circadian disruptions, and bone-muscle loss.
+Astronauts on long-duration exploration missions (e.g., Artemis lunar surface transits and crewed Mars expeditions) encounter prolonged microgravity, cosmic ionizing radiation, acoustic confinement, and isolated habitats. These spaceflight stressors induce cardiovascular deconditioning, cephalad fluid redistribution, circadian disruptions, bone-muscle density loss, and Spaceflight Associated Neuro-ocular Syndrome (SANS).
 
-**AstroCare** is an end-to-end mission intelligence and astronaut physiological health dashboard designed to:
-- **Monitor Vital Indicators:** Track Heart Rate (BPM), Blood Oxygen (SpO₂), Core Body Temperature (°C), Arterial Blood Pressure (mmHg), Sleep Duration (hrs), Physical Activity (METs), and Cosmic Radiation Exposure (μSv/h & cumulative mSv).
-- **Distinguish Data Integrity:** Transparently classify every measurement as `[MEASURED]`, `[SIMULATED]`, or `[UNAVAILABLE]` to eliminate confusion.
-- **Multivariate AI Anomaly Detection:** Run Scikit-learn **Isolation Forest** algorithms combined with transparent rule-based clinical boundary heuristics.
-- **Explainable Anomaly Scoring:** Attribute anomalous deviations directly to contributing indicators (e.g. resting tachycardia vs hypoxia vs sensor displacement).
-- **Plain-Language AI Health Insights:** Generate intuitive natural-language summaries from stored telemetry and suggest countermeasure protocols (ARED resistive exercise, fluid loading, sleep acoustic masking, radiation storm retreat).
-- **Interactive Health Analytics:** Multi-temporal Recharts trend analysis (24h, 7d, 30d, all-mission) with anomaly flags.
-- **Alert Triage Operations:** Classify alerts by severity (*Info*, *Review Required*, *Critical*) and origin (*Physiological Concern* vs *Sensor Quality Issue*), with review notes and status triage.
-- **Crew Profiles & Baselines:** Manage individualized pre-flight authorized medical baselines for each crew member.
-- **Mission Health Reports & Export:** Generate clinical summaries with 1-click **CSV export** and **Printable / PDF report** formatting.
-- **Realistic Telemetry Simulator:** Synthesize circadian rhythms, microgravity daily workout sessions, and inject targeted anomaly scenarios.
+**AstroCare** is an end-to-end mission intelligence and astronaut physiological health platform engineered to provide:
+- **Comprehensive Biometric Monitoring:** Tracks Heart Rate (BPM), Blood Oxygen (SpO₂), Core Body Temperature (°C), Arterial Blood Pressure (mmHg), Sleep Duration & Quality (hrs), Physical Activity (METs), and Cosmic Ionizing Radiation Exposure (μSv/h & cumulative mSv).
+- **Measurement Provenance & Integrity:** Classifies every metric as `[MEASURED]`, `[SIMULATED]`, or `[UNAVAILABLE]` to eliminate diagnostic ambiguity in deep-space environments.
+- **Multivariate AI Anomaly Detection:** Combines unsupervised machine learning (**Isolation Forest**) with deterministic clinical boundary heuristics aligned with NASA exploration standards.
+- **Explainable Anomaly Attribution:** Attributes anomalous deviations directly to contributing factors (e.g., resting tachycardia vs hypoxia vs sensor displacement).
+- **Plain-Language Clinical Insights:** Generates actionable, plain-language summaries and recommends targeted countermeasures (ARED resistive exercise, fluid loading, dynamic circadian lighting, storm shelter retreats).
+- **Interactive Multi-Temporal Trend Analytics:** Recharts visualization across 24-hour, 7-day, 30-day, and all-mission time horizons with anomaly flag overlays.
+- **Alert Triage & Clinical Notes:** Categorizes alerts by severity (*Critical*, *Warning*, *Nominal*) and origin (*Physiological Concern* vs *Sensor Quality Issue*) with flight surgeon review workflows.
+- **Crew Profiles & Baselines:** Manages individualized pre-flight medical baselines for each crew member.
+- **Mission Health Reports & Data Export:** Automated clinical summaries with 1-click **CSV export** and **Printable / PDF report** formatting.
+- **Realistic Telemetry Simulator:** Synthesizes circadian rhythms, microgravity daily workout sessions, and injects targeted anomaly scenarios.
+- **Cross-Platform Native Desktop Clients:** Distributed across Linux (`.deb` & portable), Windows (NSIS & portable `.zip`), and macOS (`.app` bundle).
 
 ---
 
 ## 🏛️ 2. System Architecture
 
 ```mermaid
-graph TD
-    subgraph Frontend ["React 19 + Vite Frontend (AstroCare UI - Code-Split & Modular)"]
-        UI_Dash["Astronaut Health Dashboard (/dashboard)"]
-        UI_Trends["Health Trend Analytics (/dashboard/analytics)"]
-        UI_AI["AI Anomaly Intelligence (/ai-insights)"]
-        UI_Alerts["Alert Triage Center (/dashboard/alerts)"]
-        UI_Profile["Astronaut Profile & Baseline (/dashboard/profile)"]
-        UI_Reports["Mission Reports & PDF/CSV Export (/dashboard/reports)"]
-        UI_Sim["Telemetry Simulator Studio (/dashboard/simulator)"]
-        UI_Research["NASA & CSA Research Hub (/research & /dashboard/research)"]
-        UI_About["Project Story & Scientific Basis (/about)"]
-        UI_Auth["Role Auth Gateway (/login)"]
-        UI_ErrBound["Subsystem ErrorBoundary & Suspense"]
+flowchart TB
+    subgraph ClientLayer ["Client & Mission Control Shell"]
+        DesktopApp["Native Desktop Client (Linux / Windows / macOS)"]
+        WebApp["Modern Browser Mission Console (Chrome / Firefox / Safari)"]
+        ReactUI["React 19 + TypeScript SPA (Vite Bundler)
+        - 16 Modular Mission Views
+        - Responsive Orbital Glass Design System
+        - Subsystem Error Boundaries"]
+        DesktopApp --> ReactUI
+        WebApp --> ReactUI
     end
 
-    subgraph Research_Engine ["NASA HRP & CSA Research Knowledge Base"]
-        NASA_Hazards["NASA 5 Hazards Framework (R-I-D-G-E)"]
-        NASA_Risks["NASA 8 Human Health Risks"]
-        NASA_Ongoing["Ongoing HRP Flagships (CIPHER, SPRINT, Twins)"]
-        CSA_Radiation["CSA Radiation Monitoring (EVARM, Bio-Monitor)"]
-        CSA_Science["CSA Microgravity Science (neuroArm, IGAR)"]
-        Res_Directory["5 Official Space Agency Portals & Disclaimer"]
+    subgraph CoreEngine ["Autonomous Telemetry Engine"]
+        NodeCore["Node.js 22 Standalone Telemetry Core
+        - Zero External Production Dependencies
+        - Built-in SQLite Engine (WAL Mode)
+        - Sub-Millisecond REST API Gateway
+        - Telemetry Simulation Studio"]
+        PyCore["Python 3.11+ FastAPI ML Core (Optional)
+        - Scikit-learn Isolation Forest
+        - Statistical Normalization Pipeline"]
     end
 
-    subgraph Backend ["FastAPI Python Backend"]
-        API_Gateway["FastAPI Gateway (/api)"]
-        Router_Readings["Readings Router (/api/health-readings)"]
-        Router_Trends["Trends Router (/api/health-trends)"]
-        Router_Anom["Anomaly Router (/api/analyze)"]
-        Router_Alerts["Alerts Router (/api/alerts)"]
-        Router_Astro["Astronauts Router (/api/astronauts)"]
-        Router_Reports["Reports Router (/api/reports)"]
-        Router_Sim["Simulator Router (/api/simulator)"]
-        Router_Auth["Auth Router (/api/auth)"]
+    subgraph RelationalDB ["Relational Mission Store"]
+        SQLiteDB[("SQLite 3 (astrocare.db)
+        - astronauts table
+        - readings table
+        - alerts table
+        - mission_reports table")]
     end
 
-    subgraph AI_Engine ["AI & Analytics Module"]
-        IForest["Scikit-Learn Isolation Forest"]
-        Scaler["StandardScaler Normalization"]
-        RuleEngine["Explainable Boundary Heuristics"]
-        NL_Synthesizer["Clinical Natural Language Engine"]
+    subgraph ScienceBase ["NASA & CSA Knowledge Standards"]
+        HRP["NASA Human Research Program (HRP)
+        - 5 Spaceflight Hazards (R-I-D-G-E)
+        - 8 Human Health Risk Models
+        - Exploration Medical Capabilities (ExMC)"]
+        CSA["Canadian Space Agency (CSA)
+        - EVARM Dosimetry & Bio-Monitor Wearable
+        - Microgravity Medical Robotics (neuroArm)"]
     end
 
-    subgraph Storage ["Persistent SQLite Database"]
-        DB_Readings[("readings table")]
-        DB_Astro[("astronauts table")]
-        DB_Anom[("anomalies table")]
-        DB_Alerts[("alerts table")]
-        DB_Reports[("reports table")]
-        DB_Users[("users table")]
-    end
-
-    UI_Dash --> API_Gateway
-    UI_Trends --> API_Gateway
-    UI_AI --> API_Gateway
-    UI_Alerts --> API_Gateway
-    UI_Profile --> API_Gateway
-    UI_Reports --> API_Gateway
-    UI_Sim --> API_Gateway
-    UI_Auth --> API_Gateway
-    UI_Research --> Research_Engine
-    UI_Dash --> Research_Engine
-    UI_About --> Research_Engine
-
-    API_Gateway --> Router_Readings
-    API_Gateway --> Router_Trends
-    API_Gateway --> Router_Anom
-    API_Gateway --> Router_Alerts
-    API_Gateway --> Router_Astro
-    API_Gateway --> Router_Reports
-    API_Gateway --> Router_Sim
-    API_Gateway --> Router_Auth
-
-    Router_Anom --> IForest
-    Router_Anom --> Scaler
-    Router_Anom --> RuleEngine
-    Router_Trends --> NL_Synthesizer
-
-    Router_Readings --> DB_Readings
-    Router_Astro --> DB_Astro
-    Router_Anom --> DB_Anom
-    Router_Alerts --> DB_Alerts
-    Router_Reports --> DB_Reports
-    Router_Auth --> DB_Users
+    ReactUI -->|REST API JSON| NodeCore
+    ReactUI -.->|Optional ML Pipeline| PyCore
+    NodeCore -->|Prepared SQL Statements| SQLiteDB
+    PyCore -->|SQLAlchemy / SQLite| SQLiteDB
+    NodeCore -.->|Clinical Rule Inference| HRP
+    ReactUI -.->|Reference Standards| CSA
 ```
+
+For complete architectural details, see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
 ## 🔬 2.1 NASA & Canadian Space Agency (CSA) Research Integration
 
-AstroCare directly integrates official, peer-verified scientific research from **NASA's Human Research Program (HRP)** and the **Canadian Space Agency (CSA)**:
+AstroCare directly integrates official, peer-reviewed aerospace biomedical research from **NASA's Human Research Program (HRP)** and the **Canadian Space Agency (CSA)**:
 
 1. **NASA Five Major Hazards of Human Spaceflight (R-I-D-G-E)**:
    - **Space Radiation (R)**: Galactic Cosmic Rays (GCRs) and Solar Particle Events (SPEs), biological DNA double-strand breaks, radiation sickness risk, and storm shelters.
@@ -135,147 +114,185 @@ AstroCare directly integrates official, peer-verified scientific research from *
 
 4. **Canadian Space Agency (CSA) Partner Research**:
    - **Monitoring Radiation for Astronaut Health**: Space radiation mechanics, DNA damage, continuous tracking, and Canadian detection technologies (**EVARM** spacewalk dosimeters, **bubble detectors** for neutrons, **Bio-Monitor** smart shirt).
-   - **Why Do We Conduct Science Experiments in Space?**: Microgravity physics (absence of sedimentation and convection), macromolecular crystal growth, human body as an accelerated aging model, and Canadarm robotics spinoffs into **neuroArm** and **IGAR** medical robotics.
+   - **Microgravity Science**: Absence of sedimentation and convection, macromolecular crystal growth, accelerated biological aging models, and Canadarm spinoffs into **neuroArm** and **IGAR** medical robotics.
 
 5. **Official Resource Center & NASA Disclaimer**:
-   - All 5 official agency portals accessible directly with external-link indicators and opening securely in new browser tabs (`target="_blank" rel="noopener noreferrer"`).
+   - 5 official space agency portals accessible directly with verified external-link indicators.
    - Mandatory NASA Disclaimer: *"NASA does not endorse non-U.S. Government entities. Users visiting external non-U.S. Government websites are responsible for reviewing and following the data-use policies and terms of those websites."*
 
 ---
 
 ## 🛠️ 3. Technology Stack
 
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | React 19, Vite, TypeScript, Recharts, Lucide React, Space Mission CSS Glassmorphism |
-| **Backend** | Python 3.11+, FastAPI, Uvicorn, Pydantic V2 |
-| **AI & ML** | Scikit-learn (Isolation Forest), NumPy, Pandas |
-| **Database** | SQLite 3 (WAL mode, schema auto-migration) |
-| **Security** | SHA-256 salted credentials, Bearer role authentication |
-| **Testing** | Pytest, Pytest-Asyncio, HTTPX TestClient |
+| Layer | Technologies | Key Strengths |
+| :--- | :--- | :--- |
+| **Frontend** | React 19, Vite, TypeScript 5.8+, Recharts, Lucide React | Modular code-splitting, Strict Mode, zero UI freezing |
+| **Styling** | Vanilla CSS Design Tokens, Orbital Glass Theme | Dark aerospace palette, high contrast, responsive |
+| **Desktop Shell** | Electron 34+, Node.js Native Context Bridge | Cross-platform, zero orphan processes, secure isolation |
+| **Backend Core** | Node.js 22 (`node:sqlite`, `node:http`, `node:crypto`) | Zero external npm dependencies, ultra-fast cold start |
+| **Alternative ML** | Python 3.11+, FastAPI, Scikit-learn, NumPy, Pandas | Isolation Forest multivariate model, Pydantic v2 |
+| **Database** | SQLite 3 with WAL Mode & Auto-Migrations | ACID compliant, embedded, zero configuration |
+| **Build & Deploy** | Debian `dpkg-deb`, NSIS, macOS App Bundle | Native `.deb`, Windows setup & portable, macOS `.app` |
 
 ---
 
-## 📡 4. REST API Documentation
+## 💻 4. Quickstart & Developer Workflow
 
-### Application Health & Profile
-- `GET /api/health` — Application health status, database state, and record counts.
-- `GET /api/astronauts` — List available astronaut profiles (`ASTRO-01`, `ASTRO-02`, `ASTRO-03`).
-- `GET /api/astronauts/{astronaut_id}` — Get single astronaut profile and authorized medical baseline.
-- `PUT /api/astronauts/{astronaut_id}` — Update authorized baseline parameters.
+### Prerequisites
+- **Node.js** (v18+, v20+ or v22 recommended)
+- **npm** (v9+)
+- *(Optional)* Python 3.11+ for Python FastAPI ML experiments
+
+### One-Command Setup & Launch
+```bash
+# Clone the repository
+git clone https://github.com/AlgoX-NASA/AstroCare.git
+cd AstroCare
+
+# Install frontend dependencies
+npm run --prefix frontend install
+
+# Start both backend and frontend development servers concurrently
+npm run dev
+```
+Open **`http://localhost:5173`** for live development or **`http://localhost:8000`** for production mode.
+
+### Unified Root NPM Commands
+```bash
+npm run dev              # Concurrent backend + frontend development mode
+npm run build            # Compile optimized frontend production assets
+npm run typecheck        # Strict TypeScript verification across all modules
+npm run lint             # Lightning-fast code linting (oxlint)
+npm run test             # Automated verification test suite
+npm run desktop          # Run AstroCare in standalone desktop mode
+npm run clean            # Purge build caches and temporary packaging folders
+```
+
+For complete developer onboarding and standards, see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+---
+
+## 📦 5. Cross-Platform Desktop Installers
+
+AstroCare provides pre-packaged native desktop builds for all major operating systems:
+
+```bash
+# Package specific target
+npm run package:linux     # Creates .deb and portable .tar.gz in installers/linux/
+npm run package:windows   # Creates portable .zip and NSIS installer in installers/windows/
+npm run package:mac       # Creates .app bundle and portable .tar.gz in installers/macos/
+
+# Package all platforms in one go
+npm run package:all
+```
+
+### Installation Summary
+- **🐧 Linux (Debian / Ubuntu):**
+  ```bash
+  sudo dpkg -i installers/linux/astrocare_2.0.0_amd64.deb
+  astrocare
+  ```
+- **🪟 Windows (10 / 11 64-bit):**
+  - Extract `installers/windows/AstroCare-2.0.0-Windows-Portable.zip` and run `AstroCare.bat`.
+  - Or compile the NSIS installer via `makensis installers/windows/AstroCare-Setup.nsi`.
+- **🍎 macOS (Apple Silicon / Intel):**
+  - Extract `installers/macos/AstroCare-2.0.0-macOS-Portable.tar.gz` and drag `AstroCare.app` to `/Applications`.
+
+For full step-by-step instructions, see [INSTALLATION.md](INSTALLATION.md).
+
+---
+
+## 📡 6. REST API Endpoints
+
+### Application Health & Crew Profiles
+- `GET /api/health` — Subsystem operational status, database health, record counts.
+- `GET /api/astronauts` — Crew roster (`CDR Alex Vance`, `Dr. Sarah Chen`, `Marcus Sterling`).
+- `GET /api/astronauts/{astronaut_id}` — Individual astronaut profile and authorized medical baselines.
+- `PUT /api/astronauts/{astronaut_id}` — Update individualized baseline parameters.
 
 ### Telemetry & Analytics
-- `GET /api/health-readings` — Retrieve paginated readings with metric and date filters (alias: `/api/readings`).
+- `GET /api/health-readings` — Paginated telemetry readings with metric and date filters (alias: `/api/readings`).
 - `POST /api/health-readings` — Ingest and validate a new physiological reading.
-- `GET /api/health-trends?range={24h|7d|30d|all}&astronaut_id={id}` — Retrieve chart-ready multi-point trend data with anomaly flags and plain-language trend insights.
+- `GET /api/health-trends?range={24h|7d|30d|all}&astronaut_id={id}` — Multi-temporal Recharts trend analysis with anomaly flags and plain-language insights.
 - `GET /api/readings/timeseries?metric={metric}&limit={n}` — Raw time-series points.
 
 ### AI Anomaly Detection & Alerts
-- `POST /api/analyze?contamination=0.05&limit=500` — Execute Isolation Forest multivariate analysis and generate explainable alerts.
+- `POST /api/analyze?contamination=0.05&limit=500` — Execute Isolation Forest multivariate analysis and generate explainable anomaly attributions.
 - `GET /api/anomalies` — List flagged outlier observations with decision scores.
 - `GET /api/alerts` — Query alerts filtered by severity (`critical`, `warning`, `info`), type (`health_concern`, `data_quality`), and status (`pending`, `reviewed`, `dismissed`, `escalated`).
 - `PATCH /api/alerts/{alert_id}` — Update triage review status and doctor notes.
 - `PATCH /api/alerts/{alert_id}/acknowledge` — Quick-acknowledge an alert.
 
 ### Reports & Simulator
-- `POST /api/reports/generate` — Generate a clinical mission health evaluation for selected date range.
+- `POST /api/reports/generate` — Generate a formal clinical mission health report.
 - `GET /api/reports` — List archived mission health reports.
 - `GET /api/reports/{report_id}` — Fetch detailed report JSON.
 - `GET /api/reports/{report_id}/export/csv` — Download structured CSV medical report.
 - `GET /api/simulator/status` — Get simulator engine status.
-- `POST /api/simulator/step` — Generate the next chronological 30-min telemetry record with chosen scenario.
+- `POST /api/simulator/step` — Chronologically generate next 30-min telemetry record with chosen scenario.
 - `POST /api/simulator/reset` — Reset database to clean 500-record baseline.
 
 ### Authentication
-- `POST /api/auth/login` — Prototype authentication for Astronaut or Flight Surgeon.
+- `POST /api/auth/login` — Authentication gateway for Astronaut or Flight Surgeon roles.
 - `GET /api/auth/me` — Get current authenticated user profile.
 
 ---
 
-## 💻 5. Installation & Step-by-Step Setup
+## 🎬 7. Demonstration Workflow for NASA Space Apps Judging
 
-### Prerequisites
-- **Node.js** (v18+) & **npm**
-- **Python** (3.11+)
-
-### Backend Setup
-```bash
-# 1. Navigate to backend directory
-cd backend
-
-# 2. (Optional) Create and activate virtual environment
-python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On Linux/macOS:
-source venv/bin/activate
-
-# 3. Install Python dependencies
-pip install -r requirements.txt
-
-# 4. Start the FastAPI server (runs on http://localhost:8000)
-python main.py
-```
-
-### Frontend Setup
-```bash
-# 1. Open a new terminal and navigate to frontend directory
-cd frontend
-
-# 2. Install dependencies
-npm install
-
-# 3. Start the Vite development server (runs on http://localhost:5173)
-npm run dev
-```
-
-### Running Backend Automated Tests
-```bash
-cd backend
-python -m pytest
-```
-
----
-
-## 🎬 6. Demo Scenario for NASA Space Apps Presentation
-
-Follow this 3-minute demonstration script for judging:
+Follow this 3-minute walk-through during project evaluation:
 
 1. **Mission Welcome & Overview (`/`)**:
-   - Introduce **AstroCare** by **Team AlgoX**: A space mission intelligence platform designed for long-duration crew health monitoring.
+   - Introduce **AstroCare**: An autonomous aerospace biomedical telemetry and risk management platform for long-duration deep-space transit.
 2. **Launch Mission Console (`/dashboard`)**:
-   - Note the header: Active crew member **CDR Alex Vance (ASTRO-01)**, Mission **ARTEMIS-VII**, Sol **142 of 180**.
-   - Observe the Environmental Telemetry strip: Cabin O₂ (21.2%), Pressure (101.3 kPa).
-   - Point out the **7 Core Physiological Indicator Cards**: Heart Rate, SpO₂, Core Temp, Blood Pressure, Sleep Duration, Physical Activity, Radiation Dose Rate. Highlight the explicit `[SIMULATED]`, `[MEASURED]`, and `[UNAVAILABLE]` badges.
+   - Header indicators: Active crew member **CDR Alex Vance (ASTRO-01)**, Mission **ARTEMIS-VII**, Sol **142 of 180**.
+   - Cabin Environmental Telemetry strip: Cabin O₂ (21.2%), Pressure (101.3 kPa), CO₂ (0.3%).
+   - **7 Core Biometric Indicator Cards**: Heart Rate, SpO₂, Core Temp, Blood Pressure, Sleep Duration, Physical Activity, Radiation Dose Rate. Note the strict `[SIMULATED]`, `[MEASURED]`, and `[UNAVAILABLE]` provenance badges.
 3. **Health Trend Analytics (`/dashboard/analytics`)**:
-   - Switch between **24 Hours**, **7 Days**, and **30 Days**.
-   - Notice the dashed Cyan baseline comparison line and glowing Coral anomaly point overlays on the Recharts graph.
-   - Point out the automated **Statistical Distribution** (Mean, Std Dev, Min/Max) and the data-based trend explanations.
+   - Toggle between **24 Hours**, **7 Days**, and **30 Days**.
+   - Review dashed cyan medical baselines and glowing coral anomaly overlays on the Recharts graph.
+   - Point out automated **Statistical Distribution** (Mean, Std Dev, Min/Max) and plain-language clinical insights.
 4. **AI Anomaly Detection Studio (`/ai-insights`)**:
-   - Adjust the **Contamination Sensitivity** slider and click **"RUN ISOLATION FOREST"**.
-   - Review the **Natural Language Insights** cards: *"Heart rate readings have varied within nominal limits during this monitoring window"*, and countermeasure directives for cardiovascular and sleep hygiene.
-   - Inspect the **Anomaly Score Distribution** scatter plot and feature attribution table.
+   - Adjust the **Contamination Sensitivity** slider and execute **"RUN ISOLATION FOREST"**.
+   - Inspect multivariate decision scores, anomaly rate metrics, and targeted clinical countermeasures (ARED exercise, fluid loading, sleep acoustic masking).
 5. **Live Simulation & Anomaly Injection (`/dashboard/simulator`)**:
    - Click **"+ Inject Tachycardia"** or **"+ Inject SpO₂ Dip"**.
-   - Watch the simulator synthesize the event, append it to the database, and trigger an active alert.
+   - Watch the simulator synthesize the event, persist it to SQLite, and raise an event-driven alert.
 6. **Alert Center Triage (`/dashboard/alerts`)**:
-   - View the newly generated alert. Note the clear distinction between **Physiological Concerns** vs **Sensor Quality Issues**.
-   - Click **"Clinical Review"**, update the status to **"Reviewed & Nominal"**, add flight surgeon notes, and save.
+   - View the newly generated alert distinguishing **Physiological Concerns** from **Sensor Quality Issues**.
+   - Click **"Clinical Review"**, update status to **"Reviewed & Nominal"**, input medical notes, and save.
 7. **Mission Health Report Generation & Export (`/dashboard/reports`)**:
-   - Select CDR Alex Vance and click **"Generate New Report"**.
-   - Preview the NASA-style mission medical assessment.
-   - Click **"Export CSV"** to instantly download the raw data, or **"Print / PDF Export"** to view the formatted printable summary.
+   - Generate a NASA-format mission medical assessment for CDR Alex Vance.
+   - Demonstrate 1-click **"Export CSV"** and formatted **"Print / PDF Export"**.
+8. **NASA & CSA Scientific Research Hub (`/research`)**:
+   - Explore the 5 Hazards of Spaceflight (R-I-D-G-E), 8 human health risk breakdowns, Canadian Space Agency radiation dosimetry technologies, and official agency external resources.
 
 ---
 
-## ⚖️ 7. Ethical AI & Medical Disclaimer
+## ⚖️ 8. Ethical AI & Medical Disclaimer
 
 > **Research Prototype Disclaimer:**  
-> AstroCare is an engineering demonstration and research prototype developed for the NASA Space Apps Challenge.  
-> - It is **not** certified by the FDA, NASA, ESA, or any medical regulatory agency for human clinical diagnostics.  
+> AstroCare is an aerospace engineering demonstration and research prototype developed for the NASA Space Apps Challenge.  
+> - It is **not** certified by the FDA, NASA, ESA, CSA, or any regulatory body for human clinical diagnostics.  
 > - All telemetry values are simulated or synthetic demonstrations and are explicitly labeled as `[SIMULATED]`.  
 > - Unsupervised machine learning models (Isolation Forest) detect statistical outliers and must never substitute for licensed flight medical officer judgement.
 
 ---
 
-**Team AlgoX • NASA Space Apps Challenge**
+## 📄 9. Documentation Library
+
+- [Architecture Specification](ARCHITECTURE.md)
+- [Developer Guide & Contribution Standards](DEVELOPMENT.md)
+- [Multi-Platform Installation Guide](INSTALLATION.md)
+- [Release Changelog](CHANGELOG.md)
+- [Project Documentation Specifications](docs/project/)
+- [Presentation Materials](docs/presentation/)
+
+---
+
+<div align="center">
+
+**Team AlgoX • NASA Space Apps Challenge**  
+*Advancing Human Health Across the Final Frontier.*
+
+</div>

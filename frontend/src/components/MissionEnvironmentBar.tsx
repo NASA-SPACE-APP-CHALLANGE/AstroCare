@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-    Compass, Globe, Radio, AlertCircle, Info, ChevronDown, Check,
-    Shield, Wind, Cpu, Gauge
-} from 'lucide-react';
+import { Compass, Info, ChevronDown, Check } from 'lucide-react';
 import {
     MISSION_ENVIRONMENTS,
     type EnvironmentId,
@@ -12,15 +9,10 @@ import {
 } from '@/services/missionEnvironmentService';
 
 export const MissionEnvironmentBar: React.FC<{ onEnvironmentChange?: (config: MissionEnvironmentConfig) => void }> = ({ onEnvironmentChange }) => {
-    const [activeConfig, setActiveConfig] = useState<MissionEnvironmentConfig>(getActiveEnvironmentConfig());
+    const [activeConfig, setActiveConfig] = useState<MissionEnvironmentConfig>(() => getActiveEnvironmentConfig());
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const current = getActiveEnvironmentConfig();
-        setActiveConfig(current);
-    }, []);
 
     // Close dropdown on outside click or escape key
     useEffect(() => {
