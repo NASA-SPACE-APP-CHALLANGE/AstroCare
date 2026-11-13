@@ -77,3 +77,4 @@ AstroCare does not output abstract medical probabilities. Every identified risk 
   - Maintain cabin ambient PCO2 strictly $< 2.0$ mmHg and total pressure at $101.3 \pm 1.5$ kPa.
 - **Tier 3 (Flight Surgeon Protocol):**
   - Perform near-point visual acuity sweep and Optical Coherence Tomography (OCT) retinal nerve fiber layer sweep if headache or visual blurring persists.
+

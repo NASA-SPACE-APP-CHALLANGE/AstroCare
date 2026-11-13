@@ -40,3 +40,4 @@
   - SpO2: $< 50$ or $> 100\%$ (Sensor detachment flag).
   - Core Temp: $< 30$ or $> 43$ °C (Probe disconnection flag).
 - **Missing Telemetry Rule:** Marked as `null` with status `[UNAVAILABLE]`; never filled with fabricated zero values.
+

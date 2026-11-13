@@ -158,3 +158,4 @@ erDiagram
 | `explanation`| TEXT | NOT NULL | Plain-language clinical explanation. |
 | `acknowledged`| BOOLEAN | DEFAULT FALSE | Acknowledgment state flag. |
 | `review_status`| VARCHAR(24) | NOT NULL | Status (`pending`, `reviewed`, `dismissed`, `escalated`).|
+

@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     RefreshCw, Pause, Play, Satellite,
-    Zap, Bell, ArrowRight, Activity, Brain, FileText, Cpu, Database, Settings, User, CheckCircle2, ChevronRight
+    Zap, Bell, ArrowRight, Activity, Brain, FileText, Cpu, Database, Settings, User, CheckCircle2, ChevronRight,
+    ClipboardCheck, HeartPulse
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import { MetricCard } from '@/components/MetricCard';
+import { MissionEnvironmentBar } from '@/components/MissionEnvironmentBar';
+import { HumanBodyMap } from '@/components/HumanBodyMap';
+import { DailyRoutineChecklist } from '@/components/DailyRoutineChecklist';
+import { BoxBreathingTool } from '@/components/BoxBreathingTool';
+import { SymptomCheckerModal } from '@/components/SymptomCheckerModal';
 import type { MetricStats, Alert } from '@/types';
 
 const MISSION_START = new Date('2025-01-01T00:00:00Z');
@@ -231,6 +237,7 @@ export const DashboardOverview: React.FC = () => {
     const [lastUpdate, setLastUpdate] = useState<Date>(() => new Date());
     const [elapsed, setElapsed] = useState('');
     const [stepping, setStepping] = useState(false);
+    const [symptomModalOpen, setSymptomModalOpen] = useState(false);
 
     const loadData = useCallback(async () => {
         try {
@@ -359,8 +366,20 @@ export const DashboardOverview: React.FC = () => {
                         <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
                         Refresh
                     </button>
+
+                    <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => setSymptomModalOpen(true)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.45rem 0.85rem' }}
+                    >
+                        <HeartPulse size={14} />
+                        <span>Symptom Check-In</span>
+                    </button>
                 </div>
             </div>
+
+            {/* Mission Environment & Gravity Context Selector Bar */}
+            <MissionEnvironmentBar />
 
             {/* Space Station Environmental Telemetry Strip — Orbital Glass Card */}
             <div
@@ -559,6 +578,15 @@ export const DashboardOverview: React.FC = () => {
                 )}
             </div>
 
+            {/* Interactive Anatomical Human Body Map */}
+            <HumanBodyMap />
+
+            {/* Daily Operational Routine Checklist & Guided Autonomic Box Breathing */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
+                <DailyRoutineChecklist astronautId={activeAstronautId} />
+                <BoxBreathingTool />
+            </div>
+
             {/* Recent Alerts & Quick Triage Strip */}
             {recentAlerts.length > 0 && (
                 <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255, 100, 124, 0.3)' }}>
@@ -701,6 +729,13 @@ export const DashboardOverview: React.FC = () => {
                     })}
                 </div>
             </div>
+
+            {/* Symptom Checker & Emergency Triage Modal */}
+            <SymptomCheckerModal
+                isOpen={symptomModalOpen}
+                onClose={() => setSymptomModalOpen(false)}
+                astronautId={activeAstronautId}
+            />
         </div>
     );
 };

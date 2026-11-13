@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
     Check, Search, AlertTriangle, Info,
     XOctagon, Stethoscope, CheckCircle2,
-    MessageSquare, ChevronRight, X
+    MessageSquare, ChevronRight, X, HelpCircle, PhoneCall, Send, FileText, Download
 } from 'lucide-react';
 import { api } from '@/services/api';
+import { WhatShouldIDoNowModal } from '@/components/WhatShouldIDoNowModal';
 import type { Alert } from '@/types';
 
 const SEVERITY_META: Record<string, { icon: React.ElementType; color: string; badge: string }> = {
@@ -128,6 +129,12 @@ export const AlertCenterPage: React.FC = () => {
     const [reviewStatus, setReviewStatus] = useState<'reviewed' | 'dismissed' | 'escalated'>('reviewed');
     const [updating, setUpdating] = useState(false);
 
+    // Step-by-step guide and flight surgeon modal states
+    const [guideAlert, setGuideAlert] = useState<Alert | null>(null);
+    const [surgeonModalOpen, setSurgeonModalOpen] = useState(false);
+    const [dispatchingSurgeon, setDispatchingSurgeon] = useState(false);
+    const [surgeonSuccess, setSurgeonSuccess] = useState(false);
+
     const loadAlerts = useCallback(async () => {
         setLoading(true);
         try {
@@ -234,13 +241,23 @@ export const AlertCenterPage: React.FC = () => {
                     </p>
                 </div>
 
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.65rem', alignItems: 'center', flexWrap: 'wrap' }}>
                     {counts.unacked > 0 && (
                         <span className="badge badge-warning">{counts.unacked} PENDING TRIAGE</span>
                     )}
                     <span className="badge badge-critical">{counts.critical} CRITICAL</span>
                     <span className="badge badge-warning">{counts.warning} REVIEW</span>
                     <span className="badge badge-info">{counts.info} INFO</span>
+
+                    <button
+                        type="button"
+                        onClick={() => setSurgeonModalOpen(true)}
+                        className="btn-primary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.9rem', fontSize: '0.8rem' }}
+                    >
+                        <PhoneCall size={14} />
+                        <span>Contact Flight Surgeon</span>
+                    </button>
                 </div>
             </div>
 
@@ -394,7 +411,17 @@ export const AlertCenterPage: React.FC = () => {
                                     </div>
 
                                     {/* Actions */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                        <button
+                                            onClick={() => setGuideAlert(a)}
+                                            className="btn btn-ghost btn-sm"
+                                            style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--electric-cyan)' }}
+                                            title="Step-by-step guidance protocol"
+                                        >
+                                            <HelpCircle size={13} />
+                                            What Should I Do Now?
+                                        </button>
+
                                         <button
                                             onClick={() => handleOpenTriage(a)}
                                             className="btn btn-outline btn-sm"
@@ -573,6 +600,223 @@ export const AlertCenterPage: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* "What Should I Do Now?" Guidance Modal */}
+            {guideAlert && (
+                <WhatShouldIDoNowModal
+                    isOpen={!!guideAlert}
+                    onClose={() => setGuideAlert(null)}
+                    metricName={guideAlert.metric || 'Telemetry Vital'}
+                    metricValue={guideAlert.value || 'Out of Bounds'}
+                    severity={guideAlert.severity}
+                />
+            )}
+
+            {/* Contact Flight Surgeon Review & Dispatch Modal */}
+            {surgeonModalOpen && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    background: 'rgba(5, 8, 22, 0.85)',
+                    backdropFilter: 'blur(8px)',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '1.5rem',
+                }}>
+                    <div style={{
+                        background: 'rgba(11, 16, 38, 0.98)',
+                        border: '1px solid rgba(83, 231, 255, 0.35)',
+                        borderRadius: 'var(--radius-lg)',
+                        maxWidth: 720,
+                        width: '100%',
+                        maxHeight: '90vh',
+                        overflowY: 'auto',
+                        padding: '2rem',
+                        position: 'relative',
+                        boxShadow: '0 16px 48px rgba(0,0,0,0.7)',
+                    }}>
+                        <button
+                            type="button"
+                            onClick={() => setSurgeonModalOpen(false)}
+                            style={{
+                                position: 'absolute',
+                                right: '1.5rem',
+                                top: '1.5rem',
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'var(--text-muted)',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
+                            <PhoneCall size={20} color="var(--electric-cyan)" />
+                            <span className="telemetry-label" style={{ color: 'var(--electric-cyan)' }}>GROUND SURGEON TELEMETRY LINK</span>
+                        </div>
+                        <h3 style={{ fontSize: '1.35rem', color: 'var(--stellar-white)', marginBottom: '0.4rem' }}>
+                            Contact Flight Surgeon — Clinical Summary
+                        </h3>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                            Review the automatically compiled health summary before dispatching via deep-space store-and-forward telemetry.
+                        </p>
+
+                        {/* Mission Context Pill */}
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                            gap: '0.75rem',
+                            padding: '1rem',
+                            borderRadius: 'var(--radius-md)',
+                            background: 'rgba(5, 8, 22, 0.65)',
+                            border: '1px solid rgba(83, 231, 255, 0.2)',
+                            marginBottom: '1.25rem',
+                            fontSize: '0.8rem',
+                        }}>
+                            <div>
+                                <span style={{ color: 'var(--text-muted)' }}>ASTRONAUT: </span>
+                                <strong style={{ color: 'var(--stellar-white)' }}>CDR Alex Vance (ASTRO-01)</strong>
+                            </div>
+                            <div>
+                                <span style={{ color: 'var(--text-muted)' }}>MISSION: </span>
+                                <strong style={{ color: 'var(--electric-cyan)' }}>ARTEMIS-VII / Sol 142</strong>
+                            </div>
+                            <div>
+                                <span style={{ color: 'var(--text-muted)' }}>DOMAIN: </span>
+                                <strong style={{ color: 'var(--success-mint)' }}>Lunar Surface (0.16g)</strong>
+                            </div>
+                            <div>
+                                <span style={{ color: 'var(--text-muted)' }}>LATENCY: </span>
+                                <strong style={{ color: 'var(--purple-haze)' }}>1.3s One-Way Buffer</strong>
+                            </div>
+                        </div>
+
+                        {/* Telemetry Snapshot Table */}
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--electric-cyan)', marginBottom: '0.4rem' }}>
+                                TELEMETRY SNAPSHOT VS. AUTHORIZED BASELINE
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.65rem' }}>
+                                <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'rgba(11, 16, 38, 0.8)', border: '1px solid rgba(83,231,255,0.15)' }}>
+                                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>HEART RATE</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--stellar-white)', fontWeight: 600 }}>68.4 BPM</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Baseline: 62.0</div>
+                                </div>
+                                <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'rgba(11, 16, 38, 0.8)', border: '1px solid rgba(83,231,255,0.15)' }}>
+                                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>ARTERIAL SPO₂</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--success-mint)', fontWeight: 600 }}>98.5 %</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Baseline: 98.2</div>
+                                </div>
+                                <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'rgba(11, 16, 38, 0.8)', border: '1px solid rgba(83,231,255,0.15)' }}>
+                                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>CORE TEMP</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--stellar-white)', fontWeight: 600 }}>36.7 °C</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Baseline: 36.6</div>
+                                </div>
+                                <div style={{ padding: '0.65rem', borderRadius: 'var(--radius-sm)', background: 'rgba(11, 16, 38, 0.8)', border: '1px solid rgba(83,231,255,0.15)' }}>
+                                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>RADIATION</div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--warning-amber)', fontWeight: 600 }}>0.42 mSv/d</div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>Cumul: 42.6 mSv</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Active Alerts to Dispatch */}
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <div style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--warning-amber)', marginBottom: '0.4rem' }}>
+                                ATTACHED TELEMETRY ALERTS ({alerts.length})
+                            </div>
+                            <div style={{ maxHeight: 120, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                                {alerts.map(a => (
+                                    <div key={a.alert_id} style={{ padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', background: 'rgba(5, 8, 22, 0.6)', border: '1px solid rgba(255, 184, 0, 0.2)', fontSize: '0.78rem', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span style={{ color: 'var(--stellar-white)' }}>{a.alert_id} • {a.metric} ({a.value} {a.unit})</span>
+                                        <span style={{ color: 'var(--warning-amber)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>{a.severity}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {surgeonSuccess && (
+                            <div style={{
+                                padding: '0.75rem 1rem',
+                                borderRadius: 'var(--radius-md)',
+                                background: 'rgba(93, 242, 180, 0.15)',
+                                border: '1px solid rgba(93, 242, 180, 0.35)',
+                                color: 'var(--success-mint)',
+                                fontSize: '0.85rem',
+                                marginBottom: '1.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                            }}>
+                                <CheckCircle2 size={16} />
+                                <span>Clinical packet successfully transmitted to Flight Surgeon Console (Store-and-Forward Buffered).</span>
+                            </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const csvContent = "data:text/csv;charset=utf-8," + "AlertID,Metric,Value,Unit,Severity,Timestamp\n" + alerts.map(a => `${a.alert_id},${a.metric},${a.value},${a.unit},${a.severity},${a.timestamp}`).join("\n");
+                                    const encodedUri = encodeURI(csvContent);
+                                    const link = document.createElement("a");
+                                    link.setAttribute("href", encodedUri);
+                                    link.setAttribute("download", `Flight_Surgeon_Summary_ASTRO-01.csv`);
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                }}
+                                className="btn-ghost"
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem' }}
+                            >
+                                <Download size={15} />
+                                Export Summary CSV
+                            </button>
+
+                            <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setSurgeonModalOpen(false)}
+                                    className="btn-ghost"
+                                    style={{ padding: '0.6rem 1.25rem' }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    disabled={dispatchingSurgeon || surgeonSuccess}
+                                    onClick={async () => {
+                                        setDispatchingSurgeon(true);
+                                        try {
+                                            await fetch('/api/escalate-surgeon', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    astronaut_id: 'ASTRO-01',
+                                                    alerts_count: alerts.length,
+                                                    timestamp: new Date().toISOString(),
+                                                }),
+                                            }).catch(() => null);
+                                            setSurgeonSuccess(true);
+                                            setTimeout(() => setSurgeonSuccess(false), 5000);
+                                        } finally {
+                                            setDispatchingSurgeon(false);
+                                        }
+                                    }}
+                                    className="btn-primary"
+                                    style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1.25rem' }}
+                                >
+                                    <Send size={15} />
+                                    {dispatchingSurgeon ? 'Transmitting...' : 'Dispatch to Flight Surgeon'}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

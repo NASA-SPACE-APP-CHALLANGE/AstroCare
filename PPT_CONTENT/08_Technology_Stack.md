@@ -72,3 +72,4 @@ AstroCare is engineered with a modern, high-performance technology stack selecte
 | **HMR Update Latency** | < 500ms | **< 200ms** |
 | **Telemetry Polling Cycle**| 20s | **Real-time 20s interval** (with 1s mission clock) |
 | **Simulation Step Generation**| < 100ms | **< 30ms** per 30-minute packet |
+

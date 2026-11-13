@@ -95,3 +95,4 @@ For spaceflight and analog missions where the backend server may be starting up,
 1. **API Resilience Layer:** The frontend features automated failover handlers in `loadData`, `runAnalysis`, and `fetchTrends`.
 2. **Deterministic Spaceflight Fallback:** When the backend API is offline, client-side algorithms compute calibrated physiological telemetry, Isolation Forest scores, and spaceflight alert catalogs.
 3. **Seamless State Persistence:** Local updates (e.g. alert triage notes, astronaut baselines, simulator steps) persist reliably in memory and browser local storage.
+

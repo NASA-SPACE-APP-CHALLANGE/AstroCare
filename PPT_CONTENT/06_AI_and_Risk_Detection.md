@@ -107,3 +107,4 @@ The **Risk Assessment Engine** evaluates multi-parameter physiological and envir
 1. **No False Clinical Claims:** Anomaly scores reflect *multivariate statistical divergence*, not a confirmed medical diagnosis.
 2. **Feature Attribution:** Every flagged anomaly displays which specific metric drove the outlier decision (e.g., `heart_rate (+3.2 std dev) + spo2 (-2.8 std dev)`).
 3. **Flight Surgeon Authority:** AstroCare provides decision support and evidence synthesis, explicitly keeping human clinical authority at the center of mission medicine.
+

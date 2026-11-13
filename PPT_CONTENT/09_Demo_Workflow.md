@@ -106,3 +106,4 @@ This workflow is verified to work 100% reliably in AstroCare. Presenters can fol
   - Show the scientific grounding of AstroCare: all 5 NASA hazards and 8 clinical health risks.
   - Demonstrate Canadian Space Agency (CSA) bio-dosimetry and science in space integrations.
   - Point out official NASA links and disclaimers.
+

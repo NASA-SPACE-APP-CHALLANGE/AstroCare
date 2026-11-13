@@ -76,3 +76,4 @@ The following formal functional requirements define the operational behavior of 
 ### FR-15: Unified Navigation & Layout System
 - **FR-15.1:** All 15 modules shall share the identical top navigation bar (`Navbar.tsx`) with active link indicator highlighting.
 - **FR-15.2:** All pages shall adhere to a 1400px maximum width container with matching vertical and horizontal padding.
+

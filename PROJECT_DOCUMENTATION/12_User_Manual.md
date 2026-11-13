@@ -62,3 +62,4 @@ The top navigation bar is fixed at the top of every page (`height: 64px`) and pr
 2. Click **"Generate Next 30-Min Step"** to execute one packet.
 3. Toggle **"Auto-Stream (4s)"** to continuously generate packets for live demonstrations.
 4. Click **"Reset Database to Clean Seed"** to restore the default baseline.
+

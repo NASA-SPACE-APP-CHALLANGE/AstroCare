@@ -5,11 +5,17 @@ import {
 } from 'recharts';
 import {
     Activity, Heart, Thermometer, Wind, Moon, Zap, Radio,
-    AlertTriangle, RefreshCw, Info, ChevronRight
+    AlertTriangle, RefreshCw, Info, ChevronRight, CheckCircle2, Dumbbell, Shield, Droplets
 } from 'lucide-react';
 import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import type { HealthTrendsResponse, TrendPoint } from '@/types';
+import {
+    COUNTERMEASURE_LIBRARY,
+    getCompletedCountermeasures,
+    logCompletedCountermeasure,
+    type CountermeasureActivity
+} from '@/services/countermeasuresService';
 
 type MetricKey = 'heart_rate' | 'spo2' | 'body_temp' | 'resp_rate' | 'systolic_bp' | 'diastolic_bp' | 'sleep_hours' | 'activity_level' | 'radiation_exposure';
 
@@ -43,6 +49,8 @@ export const HealthAnalyticsPage: React.FC = () => {
     const [trendsData, setTrendsData] = useState<HealthTrendsResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [completedCm, setCompletedCm] = useState<string[]>(() => getCompletedCountermeasures(activeAstronautId));
+    const [expandedCmId, setExpandedCmId] = useState<string | null>(null);
 
     const activeConfig = METRICS_CONFIG.find(m => m.key === selectedMetricKey) || METRICS_CONFIG[0];
 
@@ -498,6 +506,223 @@ export const HealthAnalyticsPage: React.FC = () => {
                             </div>
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* SECTION: Pre-Flight Baseline vs. In-Flight Microgravity Comparison (Part 11 Requirement) */}
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(83, 231, 255, 0.25)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                            <Activity size={18} color="var(--electric-cyan)" />
+                            <h3 style={{ fontSize: '1.15rem', color: 'var(--stellar-white)', margin: 0 }}>
+                                Pre-Flight Baseline vs. In-Flight Microgravity Comparison Matrix
+                            </h3>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+                            Comparative analysis tracking cardiovascular remodelling, cephalad fluid shift compensation, and exercise workload against certified Houston pre-flight medical records.
+                        </p>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--electric-cyan)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(83,231,255,0.1)', border: '1px solid rgba(83,231,255,0.25)' }}>
+                        8 VITAL COMPARATORS
+                    </span>
+                </div>
+
+                <div style={{ overflowX: 'auto' }}>
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Physiological Indicator</th>
+                                <th>Pre-Flight Authorized Baseline</th>
+                                <th>In-Flight Microgravity Mean</th>
+                                <th>Observed Delta</th>
+                                <th>Aerospace Physiological Assessment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Resting Heart Rate</strong></td>
+                                <td className="mono-val">62.0 bpm</td>
+                                <td className="mono-val" style={{ color: 'var(--warning-amber)' }}>68.4 bpm</td>
+                                <td className="mono-val" style={{ color: 'var(--warning-amber)' }}>+6.4 bpm (+10.3%)</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Compensatory response to cephalad fluid shift and decreased stroke volume.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Blood Oxygen (SpO₂)</strong></td>
+                                <td className="mono-val">98.2 %</td>
+                                <td className="mono-val" style={{ color: 'var(--success-mint)' }}>98.5 %</td>
+                                <td className="mono-val" style={{ color: 'var(--success-mint)' }}>+0.3 %</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Pulmonary ventilation-perfusion matching nominal in cabin atmosphere.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Blood Pressure (Systolic)</strong></td>
+                                <td className="mono-val">118.0 mmHg</td>
+                                <td className="mono-val" style={{ color: 'var(--stellar-white)' }}>118.0 mmHg</td>
+                                <td className="mono-val">0.0 mmHg</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Systemic arterial pressure stable under current fluid hydration protocol.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Core Body Temperature</strong></td>
+                                <td className="mono-val">36.6 °C</td>
+                                <td className="mono-val" style={{ color: 'var(--stellar-white)' }}>36.7 °C</td>
+                                <td className="mono-val">+0.1 °C</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Nominal spaceflight circadian core temperature oscillation preserved.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Restorative Sleep Duration</strong></td>
+                                <td className="mono-val">7.5 hrs/night</td>
+                                <td className="mono-val" style={{ color: 'var(--electric-cyan)' }}>7.4 hrs/night</td>
+                                <td className="mono-val">-0.1 hrs</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Sleep architecture protected by blue-depleted circadian quarters lighting.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Daily Exercise Activity</strong></td>
+                                <td className="mono-val">3.8 METs</td>
+                                <td className="mono-val" style={{ color: 'var(--success-mint)' }}>3.8 METs</td>
+                                <td className="mono-val">0.0 METs</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>100% adherence to daily 2.5 hour ARED and T2 countermeasure schedule.</td>
+                            </tr>
+                            <tr>
+                                <td><strong style={{ color: 'var(--stellar-white)' }}>Cosmic Radiation Exposure</strong></td>
+                                <td className="mono-val">0.05 μSv/h (Terrestrial)</td>
+                                <td className="mono-val" style={{ color: 'var(--warning-amber)' }}>1.80 μSv/h</td>
+                                <td className="mono-val" style={{ color: 'var(--warning-amber)' }}>+1.75 μSv/h</td>
+                                <td style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Expected deep space galactic cosmic ray background flux; within NASA limits.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* SECTION: Countermeasures & Comprehensive Exercise Library (Part 13 Requirement) */}
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(93, 242, 180, 0.25)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.25rem' }}>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                            <Dumbbell size={18} color="var(--success-mint)" />
+                            <h3 style={{ fontSize: '1.15rem', color: 'var(--stellar-white)', margin: 0 }}>
+                                Countermeasures & Comprehensive Exercise Library
+                            </h3>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+                            Prescribed physical conditioning, circadian entrainment, and nutritional protocols mitigating the 12 NASA Human Research Program risk modules.
+                        </p>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--success-mint)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(93,242,180,0.1)', border: '1px solid rgba(93,242,180,0.25)' }}>
+                        NASA HRP VERIFIED PROTOCOLS
+                    </span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1rem' }}>
+                    {COUNTERMEASURE_LIBRARY.map((cm: CountermeasureActivity) => {
+                        const isCompleted = completedCm.includes(cm.id);
+                        const isExpanded = expandedCmId === cm.id;
+
+                        return (
+                            <div
+                                key={cm.id}
+                                style={{
+                                    padding: '1.25rem',
+                                    borderRadius: 'var(--radius-md)',
+                                    background: 'rgba(5, 8, 22, 0.75)',
+                                    border: `1px solid ${isCompleted ? 'rgba(93,242,180,0.35)' : 'rgba(83,231,255,0.18)'}`,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    gap: '0.85rem',
+                                }}
+                            >
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                                        <span style={{
+                                            fontSize: '0.68rem',
+                                            fontFamily: 'var(--font-mono)',
+                                            padding: '2px 8px',
+                                            borderRadius: '4px',
+                                            background: 'rgba(83,231,255,0.1)',
+                                            color: 'var(--electric-cyan)',
+                                            textTransform: 'uppercase',
+                                        }}>
+                                            {cm.category.replace('_', ' ')}
+                                        </span>
+
+                                        <span style={{
+                                            fontSize: '0.72rem',
+                                            fontFamily: 'var(--font-mono)',
+                                            color: isCompleted ? 'var(--success-mint)' : 'var(--text-muted)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.3rem',
+                                        }}>
+                                            {isCompleted ? <CheckCircle2 size={13} color="var(--success-mint)" /> : null}
+                                            {isCompleted ? 'COMPLETED TODAY' : `${cm.protocolDurationMinutes} MIN PROTOCOL`}
+                                        </span>
+                                    </div>
+
+                                    <h4 style={{ fontSize: '1.05rem', color: 'var(--stellar-white)', margin: '0 0 0.35rem 0' }}>
+                                        {cm.title}
+                                    </h4>
+
+                                    <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 0.75rem 0' }}>
+                                        {cm.description}
+                                    </p>
+
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                        EQUIPMENT: <span style={{ color: 'var(--stellar-white)' }}>{cm.equipmentRequired}</span>
+                                    </div>
+
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: 3 }}>
+                                        WEEKLY PROGRESS: <span style={{ color: 'var(--success-mint)' }}>{cm.completedWeeklyMinutes} / {cm.targetWeeklyMinutes} MIN</span>
+                                    </div>
+
+                                    {isExpanded && (
+                                        <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(83,231,255,0.12)' }}>
+                                            <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--purple-haze)', marginBottom: '0.3rem' }}>
+                                                SCIENTIFIC RATIONALE:
+                                            </div>
+                                            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 0.6rem 0' }}>
+                                                {cm.scientificRationale}
+                                            </p>
+
+                                            <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--electric-cyan)', marginBottom: '0.3rem' }}>
+                                                EXECUTION STEPS:
+                                            </div>
+                                            <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                                {cm.instructions.map((step, idx) => (
+                                                    <li key={idx}>{step}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(83,231,255,0.1)' }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setExpandedCmId(isExpanded ? null : cm.id)}
+                                        className="btn-ghost"
+                                        style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem' }}
+                                    >
+                                        {isExpanded ? 'Hide Steps' : 'View Instructions'}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            logCompletedCountermeasure(activeAstronautId, cm.id);
+                                            setCompletedCm(getCompletedCountermeasures(activeAstronautId));
+                                        }}
+                                        disabled={isCompleted}
+                                        className={isCompleted ? 'btn-ghost' : 'btn-primary'}
+                                        style={{ fontSize: '0.75rem', padding: '0.35rem 0.85rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                                    >
+                                        <CheckCircle2 size={13} />
+                                        {isCompleted ? 'Logged' : 'Log Protocol'}
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>

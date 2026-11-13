@@ -187,3 +187,4 @@
 - **Suggested Visual:** The AstroCare emblem with astronauts walking on the Martian surface against a starfield.
 - **Speaker Notes:**
   "In conclusion, AstroCare is not just a concept or a static UI—it is a working, reliable, scientifically grounded platform. It bridges the gap between raw aerospace telemetry and life-saving clinical intelligence. As humanity prepares to journey to Mars, AstroCare stands ready to safeguard the health of our explorers. Thank you, and we welcome your questions."
+

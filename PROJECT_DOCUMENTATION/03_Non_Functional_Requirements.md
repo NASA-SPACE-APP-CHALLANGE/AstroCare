@@ -39,3 +39,4 @@ The following non-functional requirements define the quality attributes, perform
 ### NFR-06: Interoperability & Export Standards
 - **NFR-06.1 (Open Data Formats):** Telemetry exports and report summaries shall output in standard RFC-4180 compliant Comma-Separated Values (CSV) format.
 - **NFR-06.2 (Browser-Native Printing):** Mission health evaluation reports shall utilize `@media print` CSS rules, stripping interactive navigation and dark backgrounds to produce clean white-paper clinical documentation.
+

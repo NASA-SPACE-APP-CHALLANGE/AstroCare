@@ -78,3 +78,4 @@ Every flagged risk is paired with a three-tier countermeasure response protocol:
 | **Countermeasure Actionability** | Raw telemetry numbers only | 3-tier structured preventive, immediate, and medical protocols |
 | **Communication Resilience** | Requires continuous voice connection to Earth | Autonomous on-board operational mode with full offline capability |
 | **User Experience** | Cluttered industrial consoles | Ergonomic **Orbital Glass** design system with 1400px centered responsive grid |
+

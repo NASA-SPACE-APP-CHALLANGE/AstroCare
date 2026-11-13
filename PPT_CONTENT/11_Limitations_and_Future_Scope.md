@@ -44,3 +44,4 @@ In accordance with ethical scientific engineering and NASA Space Apps Challenge 
 - **Edge AI Deployment:** Quantize machine learning models (TensorFlow Lite / ONNX) to execute directly on radiation-hardened spacecraft microcontrollers (e.g. BAE RAD750 or Vorago ARM Cortex).
 - **Computer Vision Integration:** Incorporate ultrasound AI image-guidance to assist the Crew Medical Officer in performing optic nerve sheath diameter (SANS) and cardiac echocardiography sweeps.
 - **Pharmacokinetic Shelf-Life Modeling:** Model radiation-induced degradation of spacecraft medical supplies to optimize on-board pharmaceutical inventories for 3-year Mars missions.
+

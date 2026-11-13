@@ -111,3 +111,4 @@ frontend/src/
 2. Cross-correlations are evaluated (e.g. Heart Rate $> 100$ + SpO2 $< 93\%$ -> Acute Hypoxic Cardiovascular Strain).
 3. The assessment matches official NASA HRP pathophysiological evidence and outputs three-tiered countermeasure protocols.
 4. Clinicians review or update the review state (`Pending Triage` -> `Flight Surgeon Reviewed` -> `Countermeasure Deployed` -> `Mitigated`).
+

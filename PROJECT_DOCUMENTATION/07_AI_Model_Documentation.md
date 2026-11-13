@@ -59,3 +59,4 @@ $$\text{Attribution}(i) = |z_i| = \left|\frac{x_i - \mu_{\text{baseline}, i}}{\s
 
 The parameter exhibiting the highest $|z_i|$ is identified as the **primary deviating indicator**, generating an explainable clinical summary:
 > *"Acute sinus tachycardia (114.2 bpm) exceeding personal resting baseline by +3.2 standard deviations during microgravity transition."*
+

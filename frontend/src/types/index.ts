@@ -18,6 +18,7 @@ export interface Astronaut {
     current_cumulative_radiation_msv: number;
     monitoring_preferences?: string;
     avatar_url?: string;
+    created_at?: string;
 }
 
 export interface MetricStats {

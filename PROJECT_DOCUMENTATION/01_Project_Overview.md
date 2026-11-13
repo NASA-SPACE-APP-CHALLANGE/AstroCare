@@ -42,3 +42,4 @@ AstroCare is an integrated, end-to-end aerospace telemedicine and autonomous bio
 1. **Non-Alarmist Scientific Integrity:** Anomaly scores reflect *multivariate statistical divergence*, not automated medical diagnoses. The platform maintains strict scientific attribution and distinguishes established clinical findings from experimental frontiers.
 2. **Autonomous Offline Resilience:** Designed to function completely on-board during 24-minute speed-of-light Martian communication blackouts, with local state persistence and automated API failover handling.
 3. **Ergonomic Visual Hierarchy:** The **Orbital Glass** design system enforces consistent 1400px centered page layouts, high-contrast readable typography, subtle status glowing borders, and uncluttered cognitive loads.
+

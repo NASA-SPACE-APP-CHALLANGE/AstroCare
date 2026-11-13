@@ -112,3 +112,4 @@ AstroCare unites 15 fully functional mission modules under a single cohesive arc
 
 ### Module 15: System Platform Settings (`/dashboard/settings`)
 - Configuration panel for anomaly contamination rate, auto-refresh intervals, table page size, and telemetry preferences stored in browser local storage.
+

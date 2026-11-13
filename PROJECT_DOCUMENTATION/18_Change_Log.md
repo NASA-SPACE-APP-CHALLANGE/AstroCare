@@ -66,3 +66,4 @@ All notable changes to the AstroCare system are documented in this file in rever
 - Basic environmental indicators (Cabin Temp, Humidity, O2, CO2, Pressure).
 - Prototype machine learning anomaly detection using scikit-learn Isolation Forest on synthetic datasets.
 - Initial dashboard views for mission overview, telemetry, and alerts.
+

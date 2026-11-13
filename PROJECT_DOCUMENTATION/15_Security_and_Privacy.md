@@ -72,3 +72,4 @@ Deep-space exploration vehicles traveling outside Low Earth Orbit (cislunar, lun
 1. **Local Vehicle Boundary Isolation**: The AstroCare onboard node operates in an isolated local area network (LAN) inside the spacecraft. It has zero external dependencies on terrestrial identity providers (IdPs).
 2. **Cryptographic Store-and-Forward**: Telemetry generated during occultation or solar conjunction is buffered in an encrypted SQLite/PostgreSQL storage partition. When line-of-sight communication with Deep Space Network (DSN) ground antennas is restored, the buffered telemetry is transmitted with forward error correction (FEC) and signature validation.
 3. **Fail-Safe Autonomous Defaults**: If ground authentication links are severed, onboard crew credentials automatically retain life-support triage access to ensure emergency countermeasures can be deployed without artificial access lockouts.
+

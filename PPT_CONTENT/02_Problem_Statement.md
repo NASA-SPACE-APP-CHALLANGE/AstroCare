@@ -68,3 +68,4 @@ DNA damage       social void   resupply/abort bone/muscle loss toxic aerosols
 ## 4. The Urgent Need for AstroCare
 
 Long-duration deep-space exploration demands an integrated, autonomous, multi-hazard health monitoring architecture that operates on-board, correlates human physiology with environmental telemetry, and provides explainable AI decision support.
+

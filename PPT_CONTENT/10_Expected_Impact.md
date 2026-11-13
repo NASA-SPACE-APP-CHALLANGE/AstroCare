@@ -58,3 +58,4 @@ Technologies developed for the extremes of spaceflight historically yield transf
 - Demonstrates the viability of unsupervised Isolation Forest machine learning on multi-parametric physiological time-series data without requiring large labeled failure datasets.
 - Establishes a transparent, explainable decision-support pattern that pairs statistical anomalies directly with peer-reviewed pathophysiological evidence and multi-tier response actions.
 - Champions open aerospace biomedical innovation by adhering to NASA Human Research Program data schemas and open-access standards.
+

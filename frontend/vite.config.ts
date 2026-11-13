@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { astroCareApiPlugin } from './vite-api-plugin.ts'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    astroCareApiPlugin(),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

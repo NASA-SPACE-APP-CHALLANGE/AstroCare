@@ -105,3 +105,4 @@ pytest tests/ -v --cov=app
 cd ../frontend
 npm run lint
 ```
+

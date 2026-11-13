@@ -65,3 +65,4 @@ Deploy AstroCare in human spaceflight simulation environments to evaluate crew a
 | **Digital Twin Engine**| Q4 2028 | Individualized deconditioning forecasting | Predicted BMD loss within 8% of DXA ground truth |
 | **Quantized Edge AI** | Q2 2029 | ONNX C++ runtime for space avionics | Memory footprint < 16 MB, execution < 15 ms |
 | **Deep Space Flight** | 2030+ | Lunar Gateway / Artemis Habitat payload | Full autonomous flight clearance by flight surgeons |
+

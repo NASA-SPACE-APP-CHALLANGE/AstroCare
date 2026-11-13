@@ -3,7 +3,8 @@ import {
     Brain, Play, CheckCircle, XCircle,
     Info, RefreshCw,
     Moon, Heart, Radio, ChevronRight, Sparkles,
-    ShieldAlert, AlertTriangle, Activity, CheckCircle2, TrendingDown, ExternalLink
+    ShieldAlert, AlertTriangle, Activity, CheckCircle2, TrendingDown, ExternalLink,
+    HeartPulse, HelpCircle, BookOpen, Layers
 } from 'lucide-react';
 import {
     ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -13,6 +14,8 @@ import { api } from '@/services/api';
 import { useAuth } from '@/hooks/useAuth';
 import type { AnomalyRunResult, Anomaly, HealthTrendsResponse } from '@/types';
 import { OFFICIAL_SPACEFLIGHT_RISKS, type MultiParameterRisk } from '@/services/riskAssessmentService';
+import { NASA_RISK_MODULES, type NasaRiskModule } from '@/services/nasaRiskService';
+import { SymptomCheckerModal } from '@/components/SymptomCheckerModal';
 
 const METRIC_LABELS: Record<string, string> = {
     heart_rate: 'Heart Rate',
@@ -115,6 +118,8 @@ export const AIInsightsPage: React.FC = () => {
     const [risks, setRisks] = useState<MultiParameterRisk[]>(OFFICIAL_SPACEFLIGHT_RISKS);
     const [selectedHazardFilter, setSelectedHazardFilter] = useState<string>('ALL');
     const [expandedRiskId, setExpandedRiskId] = useState<string | null>(OFFICIAL_SPACEFLIGHT_RISKS[0].id);
+    const [expandedNasaRiskId, setExpandedNasaRiskId] = useState<string | null>(NASA_RISK_MODULES[0].id);
+    const [symptomModalOpen, setSymptomModalOpen] = useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -284,6 +289,16 @@ export const AIInsightsPage: React.FC = () => {
                     >
                         {loading ? <RefreshCw size={14} style={{ animation: 'spin 0.8s linear infinite' }} /> : <Play size={14} />}
                         {loading ? 'Analyzing Telemetry...' : 'RUN ISOLATION FOREST'}
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => setSymptomModalOpen(true)}
+                        className="btn btn-primary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                    >
+                        <HeartPulse size={14} />
+                        <span>Symptom Check-In</span>
                     </button>
                 </div>
             </div>
@@ -770,6 +785,155 @@ export const AIInsightsPage: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* SECTION: 12 Official NASA Human Spaceflight Risk Modules (Part 5 Requirement) */}
+            <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(146, 117, 255, 0.25)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                            <BookOpen size={18} color="var(--purple-haze)" />
+                            <h3 style={{ fontSize: '1.15rem', color: 'var(--stellar-white)', margin: 0 }}>
+                                Official NASA Human Research Program (HRP) Risk Modules
+                            </h3>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+                            12 core biomedical spaceflight risks formulated by NASA HRP and the Canadian Space Agency (CSA) with plain-English descriptions, contributing vitals, potential clinical effects, and tiered interventions.
+                        </p>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--purple-haze)', padding: '4px 10px', borderRadius: '4px', background: 'rgba(146,117,255,0.12)', border: '1px solid rgba(146,117,255,0.25)' }}>
+                        12 RECOGNIZED SPACEFLIGHT RISKS
+                    </span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1rem' }}>
+                    {NASA_RISK_MODULES.map(rsk => {
+                        const isExpanded = expandedNasaRiskId === rsk.id;
+                        return (
+                            <div
+                                key={rsk.id}
+                                style={{
+                                    padding: '1.15rem',
+                                    borderRadius: 'var(--radius-md)',
+                                    background: 'rgba(5, 8, 22, 0.7)',
+                                    border: `1px solid ${rsk.statusLevel === 'warning' ? 'rgba(255,184,0,0.3)' : 'rgba(83,231,255,0.15)'}`,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    gap: '0.85rem',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.15s ease',
+                                }}
+                                onClick={() => setExpandedNasaRiskId(isExpanded ? null : rsk.id)}
+                            >
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <span style={{
+                                                fontSize: '0.7rem',
+                                                fontFamily: 'var(--font-mono)',
+                                                fontWeight: 700,
+                                                color: 'var(--purple-haze)',
+                                                background: 'rgba(146,117,255,0.15)',
+                                                padding: '2px 6px',
+                                                borderRadius: '4px',
+                                            }}>
+                                                RISK #{rsk.riskNumber}
+                                            </span>
+                                            <span style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                                                {rsk.associatedHazard}
+                                            </span>
+                                        </div>
+
+                                        <span style={{
+                                            fontSize: '0.68rem',
+                                            fontFamily: 'var(--font-mono)',
+                                            fontWeight: 600,
+                                            padding: '2px 8px',
+                                            borderRadius: '4px',
+                                            background: rsk.statusLevel === 'warning' ? 'rgba(255,184,0,0.15)' : 'rgba(93,242,180,0.12)',
+                                            color: rsk.statusLevel === 'warning' ? 'var(--warning-amber)' : 'var(--success-mint)',
+                                        }}>
+                                            {rsk.currentDataStatus}
+                                        </span>
+                                    </div>
+
+                                    <h4 style={{ fontSize: '0.98rem', color: 'var(--stellar-white)', margin: '0 0 0.4rem 0' }}>
+                                        {rsk.name}
+                                    </h4>
+
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+                                        {rsk.simpleEnglishExplanation}
+                                    </p>
+                                </div>
+
+                                {/* Contributing Indicators */}
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                                    {rsk.contributingIndicators.map((ind, i) => (
+                                        <span key={i} style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', padding: '2px 6px', borderRadius: '4px', background: 'rgba(83,231,255,0.08)', color: 'var(--electric-cyan)', border: '1px solid rgba(83,231,255,0.15)' }}>
+                                            {ind}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                {isExpanded && (
+                                    <div style={{ marginTop: '0.5rem', paddingTop: '0.85rem', borderTop: '1px solid rgba(146,117,255,0.15)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        {/* Potential Clinical Effects */}
+                                        <div>
+                                            <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--warning-amber)', marginBottom: '0.25rem' }}>
+                                                POTENTIAL PHYSIOLOGICAL EFFECTS:
+                                            </div>
+                                            <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                                                {rsk.potentialEffects.map((eff, i) => (
+                                                    <li key={i}>{eff}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {/* Tiered Recommended Actions */}
+                                        <div style={{ background: 'rgba(11,16,38,0.8)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(93,242,180,0.2)' }}>
+                                            <div style={{ fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--success-mint)', marginBottom: '0.35rem' }}>
+                                                RECOMMENDED COUNTERMEASURE ACTIONS:
+                                            </div>
+                                            <div style={{ fontSize: '0.78rem', color: 'var(--stellar-white)', marginBottom: '0.25rem' }}>
+                                                <strong>Immediate:</strong> {rsk.recommendedActions.immediate}
+                                            </div>
+                                            <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
+                                                <strong>Preventive:</strong> {rsk.recommendedActions.preventive}
+                                            </div>
+                                            <div style={{ fontSize: '0.78rem', color: 'var(--purple-haze)' }}>
+                                                <strong>Surgeon:</strong> {rsk.recommendedActions.flightSurgeon}
+                                            </div>
+                                        </div>
+
+                                        {/* References */}
+                                        <div>
+                                            {rsk.supportingReferences.map((ref, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={ref.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.72rem', fontFamily: 'var(--font-mono)', color: 'var(--electric-cyan)', textDecoration: 'none' }}
+                                                >
+                                                    <ExternalLink size={12} />
+                                                    <span>{ref.title} ({ref.source})</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Symptom Checker Modal */}
+            <SymptomCheckerModal
+                isOpen={symptomModalOpen}
+                onClose={() => setSymptomModalOpen(false)}
+                astronautId={activeAstronautId}
+            />
         </div>
     );
 };

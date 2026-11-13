@@ -65,3 +65,4 @@
 ### T
 - **Tachycardia**: An abnormally elevated resting heart rate exceeding 100 beats per minute in adult humans.
 - **Telemetry**: The automated communication process by which biomedical and environmental measurements are collected at remote locations (e.g., inside a space suit or habitat) and transmitted to receiving equipment for monitoring.
+

@@ -55,3 +55,4 @@ AstroCare is a **Clinical Decision Support System (CDSS)** designed to augment a
 | Three-tier countermeasure protocol recommendations | Yes | Automated robotic surgery or invasive therapeutics |
 | Real-time habitat environmental correlation | Yes | Closed-loop ECLSS life support hardware actuation |
 | Offline client-side resilient mission simulation | Yes | Replacement for a certified aerospace flight surgeon |
+

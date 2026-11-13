@@ -222,3 +222,4 @@ export function evaluateCurrentRisks(metrics: any[]): MultiParameterRisk[] {
     // Return the curated official spaceflight risks with up-to-date timestamps
     return OFFICIAL_SPACEFLIGHT_RISKS;
 }
+

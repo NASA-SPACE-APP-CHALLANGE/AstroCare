@@ -69,3 +69,4 @@ AstroCare continuously cross-evaluates six core multi-parameter spaceflight risk
 | **High** | `#FF8B53` (Orange) | Significant physiological compromise or rapid hazard accumulation. | Action within $< 60$ minutes. |
 | **Moderate** | `var(--warning-amber)` | Progressive physiological deconditioning or environmental drift. | Review within active 12-hour mission shift. |
 | **Low / Info**| `var(--electric-cyan)` | Minor statistical variation or operational milestone notice. | Document in daily flight surgeon report. |
+

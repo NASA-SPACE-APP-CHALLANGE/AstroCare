@@ -53,3 +53,4 @@ Every medical threshold, anomaly description, and countermeasure protocol in Ast
 - **AstroCare Mapping:**
   - Permissible occupational career radiation limits ($600\text{ mSv}$ lifetime cap).
   - Spacecraft Maximum Allowable Concentrations (SMAC) for cabin atmospheric CO2 and O2.
+
