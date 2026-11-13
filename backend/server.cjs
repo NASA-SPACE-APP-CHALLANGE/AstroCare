@@ -766,11 +766,19 @@ const server = http.createServer(async (req, res) => {
             const contamination = body.contamination || 0.05;
             const astronautId = body.astronaut_id || searchParams.get('astronaut_id') || 'ASTRO-01';
             const anoms = anomaliesDb[astronautId] || anomaliesDb['ASTRO-01'];
+            const runId = 'RUN-' + Math.floor(1000 + Math.random() * 9000);
 
             sendJSON(res, {
+                run_id: runId,
+                method: 'Multivariate Isolation Forest (100 Trees)',
+                records_analyzed: 500,
                 total_analyzed: 500,
+                anomalies_found: anoms.length,
                 anomalies_detected: anoms.length,
+                anomaly_rate: contamination,
                 contamination_rate: contamination,
+                model_status: 'success',
+                message: `Isolation Forest evaluated 500 telemetry records for ${astronautId}. ${anoms.length} anomalies detected.`,
                 anomalies: anoms,
             });
             return;

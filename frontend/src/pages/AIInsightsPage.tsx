@@ -680,9 +680,21 @@ export const AIInsightsPage: React.FC = () => {
                 {[
                     { label: 'Detection Method', val: result?.method || 'IsolationForest', color: 'var(--aurora-violet)' },
                     { label: 'Model Status', val: result?.model_status?.replace('_', ' ').toUpperCase() || 'READY', color: result?.model_status === 'success' ? 'var(--success-mint)' : 'var(--text-muted)' },
-                    { label: 'Records Analyzed', val: result ? result.records_analyzed.toLocaleString() : '500', color: 'var(--electric-cyan)' },
-                    { label: 'Anomalies Detected', val: result ? String(result.anomalies_found) : String(existingAnomalies.length), color: 'var(--warning-amber)' },
-                    { label: 'Anomaly Rate', val: result ? `${(result.anomaly_rate * 100).toFixed(1)}%` : `${(contamination * 100).toFixed(1)}%`, color: 'var(--critical-coral)' },
+                    {
+                        label: 'Records Analyzed',
+                        val: (result?.records_analyzed ?? (result as any)?.total_analyzed ?? 500).toLocaleString(),
+                        color: 'var(--electric-cyan)',
+                    },
+                    {
+                        label: 'Anomalies Detected',
+                        val: String(result?.anomalies_found ?? (result as any)?.anomalies_detected ?? result?.anomalies?.length ?? existingAnomalies.length),
+                        color: 'var(--warning-amber)',
+                    },
+                    {
+                        label: 'Anomaly Rate',
+                        val: `${(((result?.anomaly_rate ?? (result as any)?.contamination_rate ?? contamination)) * 100).toFixed(1)}%`,
+                        color: 'var(--critical-coral)',
+                    },
                 ].map(item => (
                     <div key={item.label} className="glass-card" style={{ padding: '1rem', textAlign: 'center' }}>
                         <div className="telemetry-label" style={{ marginBottom: '0.4rem' }}>{item.label}</div>

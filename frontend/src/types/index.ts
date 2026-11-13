@@ -128,6 +128,9 @@ export interface AnomalyRunResult {
     model_status: string;
     message: string;
     anomalies: Anomaly[];
+    total_analyzed?: number;
+    anomalies_detected?: number;
+    contamination_rate?: number;
 }
 
 export interface Alert {
