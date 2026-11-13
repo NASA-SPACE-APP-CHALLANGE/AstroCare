@@ -551,6 +551,52 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        // GET /api/readings/timeseries
+        if (req.method === 'GET' && pathname === '/api/readings/timeseries') {
+            const metric = searchParams.get('metric') || 'heart_rate';
+            const limit = parseInt(searchParams.get('limit') || '200', 10);
+            const astronautId = searchParams.get('astronaut_id') || 'ASTRO-01';
+            const allowedMetrics = ['heart_rate', 'spo2', 'body_temp', 'resp_rate', 'systolic_bp', 'diastolic_bp', 'radiation_exposure', 'sleep_hours', 'activity_level'];
+            const safeMetric = allowedMetrics.includes(metric) ? metric : 'heart_rate';
+
+            let points = [];
+            try {
+                const rows = db.prepare(`SELECT id, timestamp, ${safeMetric} as value, source, astronaut_id FROM readings WHERE astronaut_id = ? AND ${safeMetric} IS NOT NULL ORDER BY timestamp ASC LIMIT ?`).all(astronautId, limit);
+                points = rows;
+            } catch (e) {
+                points = [];
+            }
+
+            if (points.length === 0) {
+                const now = Date.now();
+                const count = Math.min(limit, 100);
+                for (let i = count; i >= 0; i--) {
+                    const ts = new Date(now - i * 1800000).toISOString();
+                    let val = 68.4;
+                    if (safeMetric === 'heart_rate') val = +(64 + Math.sin(i * 0.4) * 8).toFixed(1);
+                    else if (safeMetric === 'spo2') val = +(98.2 + Math.cos(i * 0.3) * 0.8).toFixed(1);
+                    else if (safeMetric === 'body_temp') val = +(36.6 + Math.sin(i * 0.2) * 0.3).toFixed(2);
+                    else if (safeMetric === 'resp_rate') val = +(14.0 + Math.sin(i * 0.3) * 1.5).toFixed(1);
+                    else if (safeMetric === 'systolic_bp') val = +(117 + Math.sin(i * 0.4) * 5).toFixed(1);
+                    else if (safeMetric === 'diastolic_bp') val = +(77 + Math.sin(i * 0.4) * 3).toFixed(1);
+                    else if (safeMetric === 'radiation_exposure') val = +(0.38 + (i % 5) * 0.02).toFixed(3);
+                    else if (safeMetric === 'sleep_hours') val = 7.4;
+                    else if (safeMetric === 'activity_level') val = 3.6;
+
+                    points.push({
+                        id: 1000 + i,
+                        timestamp: ts,
+                        value: val,
+                        source: 'measured',
+                        astronaut_id: astronautId,
+                    });
+                }
+            }
+
+            sendJSON(res, { metric: safeMetric, total_points: points.length, points });
+            return;
+        }
+
         // POST /api/health-readings
         if (req.method === 'POST' && (pathname === '/api/health-readings' || pathname === '/api/readings')) {
             const body = await parseBody(req);

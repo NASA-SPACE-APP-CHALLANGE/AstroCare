@@ -234,7 +234,7 @@ export const AboutPage: React.FC = () => (
             </div>
             <p>Participating in the NASA Space Apps Challenge. Built AstroCare as a full-stack space health intelligence platform combining data science, machine learning, and aerospace-grade UI design.</p>
             <div style={{ marginTop: '1rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <a href="https://github.com/VaishnavSreejan" target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
+                <a href="https://github.com/NASA-SPACE-APP-CHALLANGE" target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
                     <Github size={14} /> GitHub
                 </a>
                 <span className="badge badge-muted" style={{ alignSelf: 'center' }}>NASA Space Apps Challenge 2026</span>

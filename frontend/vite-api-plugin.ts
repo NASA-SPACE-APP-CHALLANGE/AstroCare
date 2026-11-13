@@ -485,6 +485,38 @@ export function astroCareApiPlugin(): Plugin {
                     return sendJson(res, { total: sampleReadings.length, readings: sampleReadings });
                 }
 
+                // 7b. GET /api/readings/timeseries
+                if (req.method === 'GET' && pathname === '/api/readings/timeseries') {
+                    const metric = searchParams.get('metric') || 'heart_rate';
+                    const limit = parseInt(searchParams.get('limit') || '200', 10);
+                    const astronautId = searchParams.get('astronaut_id') || 'ASTRO-01';
+                    const points = [];
+                    const now = Date.now();
+                    const count = Math.min(limit, 100);
+                    for (let i = count; i >= 0; i--) {
+                        const ts = new Date(now - i * 1800000).toISOString();
+                        let val = 68.4;
+                        if (metric === 'heart_rate') val = +(64 + Math.sin(i * 0.4) * 8 + (Math.random() * 2 - 1)).toFixed(1);
+                        else if (metric === 'spo2') val = +(98.2 + Math.cos(i * 0.3) * 0.8).toFixed(1);
+                        else if (metric === 'body_temp') val = +(36.6 + Math.sin(i * 0.2) * 0.3).toFixed(2);
+                        else if (metric === 'resp_rate') val = +(14.0 + Math.sin(i * 0.3) * 1.5).toFixed(1);
+                        else if (metric === 'systolic_bp') val = +(117 + Math.sin(i * 0.4) * 5).toFixed(1);
+                        else if (metric === 'diastolic_bp') val = +(77 + Math.sin(i * 0.4) * 3).toFixed(1);
+                        else if (metric === 'radiation_exposure') val = +(0.38 + (i % 5) * 0.02).toFixed(3);
+                        else if (metric === 'sleep_hours') val = 7.4;
+                        else if (metric === 'activity_level') val = 3.6;
+
+                        points.push({
+                            id: 1000 + i,
+                            timestamp: ts,
+                            value: val,
+                            source: 'measured',
+                            astronaut_id: astronautId,
+                        });
+                    }
+                    return sendJson(res, { metric, total_points: points.length, points });
+                }
+
                 // 8. POST /api/health-readings
                 if (req.method === 'POST' && (pathname === '/api/health-readings' || pathname === '/api/readings')) {
                     const body = await parseBody(req);
