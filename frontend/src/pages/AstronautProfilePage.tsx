@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-    User, Shield, Heart, Activity, Thermometer, Moon, Zap, Radio,
-    Save, CheckCircle2, AlertCircle, Edit3, Settings, Clock
+    User, Shield, Save, CheckCircle2, AlertCircle, Edit3
 } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { api } from '@/services/api';
-import type { Astronaut } from '@/types';
 
 export const AstronautProfilePage: React.FC = () => {
-    const { activeAstronautId, activeAstronaut, allAstronauts, setActiveAstronautId, refreshAstronauts, user } = useAuth();
+    const { activeAstronautId, activeAstronaut, allAstronauts, setActiveAstronautId, refreshAstronauts } = useAuth();
 
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);

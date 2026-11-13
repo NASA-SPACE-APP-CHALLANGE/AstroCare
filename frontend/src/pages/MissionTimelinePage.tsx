@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Clock, Zap, Database, Brain, Bell, Upload } from 'lucide-react';
+import { Zap, Database, Brain, Bell } from 'lucide-react';
 import { api } from '@/services/api';
 
 interface TimelineEvent {
@@ -11,14 +11,6 @@ interface TimelineEvent {
     icon: React.ElementType;
     color: string;
 }
-
-const TYPE_META: Record<TimelineEvent['type'], { color: string; icon: React.ElementType }> = {
-    data: { color: 'var(--electric-cyan)', icon: Database },
-    analysis: { color: 'var(--aurora-violet)', icon: Brain },
-    alert: { color: 'var(--warning-amber)', icon: Bell },
-    import: { color: 'var(--success-mint)', icon: Upload },
-    system: { color: 'var(--muted-blue-gray)', icon: Zap },
-};
 
 export const MissionTimelinePage: React.FC = () => {
     const [events, setEvents] = useState<TimelineEvent[]>([]);
@@ -62,7 +54,7 @@ export const MissionTimelinePage: React.FC = () => {
                         color: 'var(--electric-cyan)',
                     });
                 }
-            } catch (e) { }
+            } catch { }
 
             try {
                 const anomalies = await api.anomalies(undefined, true, 10);
@@ -77,7 +69,7 @@ export const MissionTimelinePage: React.FC = () => {
                         icon: Brain,
                         color: 'var(--aurora-violet)',
                     });
-                    anomalies.slice(0, 3).forEach((a, i) => {
+                    anomalies.slice(0, 3).forEach(a => {
                         timeline.push({
                             id: `anom-${a.id}`,
                             time: a.timestamp,
@@ -89,7 +81,7 @@ export const MissionTimelinePage: React.FC = () => {
                         });
                     });
                 }
-            } catch (e) { }
+            } catch { }
 
             try {
                 const alerts = await api.alerts({ limit: 5 });
@@ -106,7 +98,7 @@ export const MissionTimelinePage: React.FC = () => {
                         });
                     }
                 }
-            } catch (e) { }
+            } catch { }
 
             timeline.sort((a, b) => a.time.localeCompare(b.time));
             setEvents(timeline);

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
-    CartesianGrid, ReferenceLine, ReferenceArea
+    CartesianGrid, ReferenceLine
 } from 'recharts';
 import {
     Activity, Heart, Thermometer, Wind, Moon, Zap, Radio,
-    Clock, AlertTriangle, ShieldCheck, RefreshCw, Info, ChevronRight
+    AlertTriangle, RefreshCw, Info, ChevronRight
 } from 'lucide-react';
 import { api } from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import type { HealthTrendsResponse, TrendPoint } from '@/types';
 
 type MetricKey = 'heart_rate' | 'spo2' | 'body_temp' | 'resp_rate' | 'systolic_bp' | 'diastolic_bp' | 'sleep_hours' | 'activity_level' | 'radiation_exposure';
@@ -46,7 +46,7 @@ export const HealthAnalyticsPage: React.FC = () => {
 
     const activeConfig = METRICS_CONFIG.find(m => m.key === selectedMetricKey) || METRICS_CONFIG[0];
 
-    const fetchTrends = async () => {
+    const fetchTrends = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -57,11 +57,11 @@ export const HealthAnalyticsPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [timeRange, activeAstronautId]);
 
     useEffect(() => {
         fetchTrends();
-    }, [selectedMetricKey, timeRange, activeAstronautId]);
+    }, [fetchTrends]);
 
     // Compute statistical summary from the points
     const points = trendsData?.points || [];
@@ -160,6 +160,12 @@ export const HealthAnalyticsPage: React.FC = () => {
                     </button>
                 </div>
             </div>
+
+            {error && (
+                <div className="glass-card" style={{ padding: '0.75rem 1rem', background: 'rgba(255,100,124,0.08)', borderColor: 'rgba(255,100,124,0.3)', color: 'var(--critical-coral)', fontSize: '0.85rem' }}>
+                    {error}
+                </div>
+            )}
 
             {/* Metric Selector Tabs */}
             <div style={{

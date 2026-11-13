@@ -6,7 +6,7 @@ import {
     Upload, Clock, FileText, User, Cpu, LogOut, Stethoscope, UserCheck, BookOpen
 } from 'lucide-react';
 import { AstroCareLogo } from './Logo';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 
 const SIDEBAR_ITEMS = [
     { icon: LayoutDashboard, label: 'Mission Overview', to: '/dashboard', exact: true },
@@ -127,6 +127,7 @@ export const DashboardSidebar: React.FC<SidebarProps> = ({ collapsed = false, on
                             <Link
                                 to="/login"
                                 title="Switch Role or Login"
+                                onClick={() => logout()}
                                 style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
                             >
                                 <LogOut size={13} />

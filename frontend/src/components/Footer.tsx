@@ -4,6 +4,8 @@ import { ExternalLink, Shield } from 'lucide-react';
 import { AstroCareLogo } from './Logo';
 import { NASA_DISCLAIMER_TEXT, OFFICIAL_RESOURCES } from '@/data/researchData';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const Footer: React.FC = () => {
     return (
         <footer
@@ -184,7 +186,7 @@ export const Footer: React.FC = () => {
                     }}
                 >
                     <div>
-                        © {new Date().getFullYear()} AstroCare • Team AlgoX • NASA Space Apps Challenge
+                        © {CURRENT_YEAR} AstroCare • Team AlgoX • NASA Space Apps Challenge
                     </div>
                     <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                         <span>NASA HRP COMPLIANT</span>

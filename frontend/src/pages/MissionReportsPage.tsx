@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {
-    FileText, Download, Printer, Plus, CheckCircle2,
-    Calendar, AlertTriangle, ShieldCheck, Activity, User, ChevronDown
-} from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FileText, Download, Printer, Plus } from 'lucide-react';
 import { api } from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import type { MissionReport } from '@/types';
 
 export const MissionReportsPage: React.FC = () => {
@@ -18,7 +15,7 @@ export const MissionReportsPage: React.FC = () => {
     const [endDate, setEndDate] = useState('2025-01-11');
     const [reportTitle, setReportTitle] = useState('');
 
-    const fetchReports = async () => {
+    const fetchReports = useCallback(async () => {
         setLoading(true);
         try {
             const data = await api.reports.list();
@@ -31,11 +28,11 @@ export const MissionReportsPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedReport]);
 
     useEffect(() => {
         fetchReports();
-    }, []);
+    }, [fetchReports]);
 
     const handleGenerate = async (e: React.FormEvent) => {
         e.preventDefault();

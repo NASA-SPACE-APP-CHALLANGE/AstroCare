@@ -28,7 +28,7 @@ Astronauts on long-duration exploration missions (e.g., Artemis deep-space trans
 
 ```mermaid
 graph TD
-    subgraph Frontend ["React.js + Vite Frontend (AstroCare UI)"]
+    subgraph Frontend ["React 19 + Vite Frontend (AstroCare UI - Code-Split & Modular)"]
         UI_Dash["Astronaut Health Dashboard (/dashboard)"]
         UI_Trends["Health Trend Analytics (/dashboard/analytics)"]
         UI_AI["AI Anomaly Intelligence (/ai-insights)"]
@@ -36,7 +36,19 @@ graph TD
         UI_Profile["Astronaut Profile & Baseline (/dashboard/profile)"]
         UI_Reports["Mission Reports & PDF/CSV Export (/dashboard/reports)"]
         UI_Sim["Telemetry Simulator Studio (/dashboard/simulator)"]
+        UI_Research["NASA & CSA Research Hub (/research & /dashboard/research)"]
+        UI_About["Project Story & Scientific Basis (/about)"]
         UI_Auth["Role Auth Gateway (/login)"]
+        UI_ErrBound["Subsystem ErrorBoundary & Suspense"]
+    end
+
+    subgraph Research_Engine ["NASA HRP & CSA Research Knowledge Base"]
+        NASA_Hazards["NASA 5 Hazards Framework (R-I-D-G-E)"]
+        NASA_Risks["NASA 8 Human Health Risks"]
+        NASA_Ongoing["Ongoing HRP Flagships (CIPHER, SPRINT, Twins)"]
+        CSA_Radiation["CSA Radiation Monitoring (EVARM, Bio-Monitor)"]
+        CSA_Science["CSA Microgravity Science (neuroArm, IGAR)"]
+        Res_Directory["5 Official Space Agency Portals & Disclaimer"]
     end
 
     subgraph Backend ["FastAPI Python Backend"]
@@ -75,6 +87,9 @@ graph TD
     UI_Reports --> API_Gateway
     UI_Sim --> API_Gateway
     UI_Auth --> API_Gateway
+    UI_Research --> Research_Engine
+    UI_Dash --> Research_Engine
+    UI_About --> Research_Engine
 
     API_Gateway --> Router_Readings
     API_Gateway --> Router_Trends
@@ -97,6 +112,34 @@ graph TD
     Router_Reports --> DB_Reports
     Router_Auth --> DB_Users
 ```
+
+---
+
+## 🔬 2.1 NASA & Canadian Space Agency (CSA) Research Integration
+
+AstroCare directly integrates official, peer-verified scientific research from **NASA's Human Research Program (HRP)** and the **Canadian Space Agency (CSA)**:
+
+1. **NASA Five Major Hazards of Human Spaceflight (R-I-D-G-E)**:
+   - **Space Radiation (R)**: Galactic Cosmic Rays (GCRs) and Solar Particle Events (SPEs), biological DNA double-strand breaks, radiation sickness risk, and storm shelters.
+   - **Isolation & Confinement (I)**: Small teams in closed habitats, third-quarter phenomenon, dynamic circadian LED lighting, and VR psychological support.
+   - **Distance from Earth (D)**: 22-minute communication lag, impossible rapid evacuation, onboard medical autonomy, and ExMC clinical algorithms.
+   - **Gravity Fields (G)**: 0-G free-fall, 3-5 G launch/entry, lunar (0.16 G) & Mars (0.38 G) transitions, cephalad fluid shift, 1-1.5% monthly bone loss, SANS, and ARED exercise.
+   - **Hostile/Closed Environments (E)**: Recycled air/water, elevated CO2, altered biofilms, lunar/Martian regolith dust toxicity, ECLSS scrubbers, and on-orbit MinION DNA sequencing.
+
+2. **NASA Human Spaceflight Health Risks**:
+   - Comprehensive clinical breakdowns for Bone & Muscle Loss, Cardiovascular Remodeling, Vision-related SANS, Immune Dysregulation, Radiation Carcinogenesis, Sleep Disturbances, Psychological Confinement Stress, and Cognitive Adaptation.
+   - Strict scientific badges distinguishing established clinical findings from active ongoing research frontiers.
+
+3. **NASA Ongoing Human Research Program (HRP)**:
+   - Profiles active research elements (ExMC, HFBP, HHC, ROI, SR) and flagship studies: **CIPHER**, **SPRINT**, **NASA Twins Study follow-ons**, **Food Physiology**, **SANS Countermeasures**, and **Space Flight Standard Measures**.
+
+4. **Canadian Space Agency (CSA) Partner Research**:
+   - **Monitoring Radiation for Astronaut Health**: Space radiation mechanics, DNA damage, continuous tracking, and Canadian detection technologies (**EVARM** spacewalk dosimeters, **bubble detectors** for neutrons, **Bio-Monitor** smart shirt).
+   - **Why Do We Conduct Science Experiments in Space?**: Microgravity physics (absence of sedimentation and convection), macromolecular crystal growth, human body as an accelerated aging model, and Canadarm robotics spinoffs into **neuroArm** and **IGAR** medical robotics.
+
+5. **Official Resource Center & NASA Disclaimer**:
+   - All 5 official agency portals accessible directly with external-link indicators and opening securely in new browser tabs (`target="_blank" rel="noopener noreferrer"`).
+   - Mandatory NASA Disclaimer: *"NASA does not endorse non-U.S. Government entities. Users visiting external non-U.S. Government websites are responsible for reviewing and following the data-use policies and terms of those websites."*
 
 ---
 

@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-    Cpu, Play, RefreshCw, Zap, AlertTriangle, ShieldCheck,
-    Radio, Activity, CheckCircle2, FastForward, Sliders
+    Cpu, Play, RefreshCw, AlertTriangle,
+    CheckCircle2, FastForward, Sliders
 } from 'lucide-react';
 import { api } from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import type { SimulatorStatus } from '@/types';
 
 export const DataSimulatorPage: React.FC = () => {
-    const { activeAstronautId, activeAstronaut, allAstronauts, setActiveAstronautId } = useAuth();
+    const { activeAstronautId, allAstronauts, setActiveAstronautId } = useAuth();
 
     const [status, setStatus] = useState<SimulatorStatus | null>(null);
     const [loading, setLoading] = useState(false);
     const [lastReading, setLastReading] = useState<any | null>(null);
-    const [selectedScenario, setSelectedScenario] = useState<string>('normal');
+    const [selectedScenario] = useState<string>('normal');
     const [autoStreaming, setAutoStreaming] = useState(false);
     const [notification, setNotification] = useState<string | null>(null);
 
-    const fetchStatus = async () => {
+    const fetchStatus = useCallback(async () => {
         try {
             const data = await api.simulator.status();
             setStatus(data);
         } catch (err) {
             console.error('Failed to load simulator status', err);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchStatus();
-    }, []);
+    }, [fetchStatus]);
 
     // Auto streaming timer
     useEffect(() => {
@@ -47,7 +47,7 @@ export const DataSimulatorPage: React.FC = () => {
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [autoStreaming, activeAstronautId]);
+    }, [autoStreaming, activeAstronautId, fetchStatus]);
 
     const handleStep = async (scenarioToInject?: string) => {
         const scenario = scenarioToInject || selectedScenario;

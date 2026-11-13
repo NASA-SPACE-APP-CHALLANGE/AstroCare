@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-    Bell, Check, Search, Filter, AlertTriangle, Info,
-    XOctagon, Stethoscope, ShieldAlert, Cpu, CheckCircle2,
+    Check, Search, AlertTriangle, Info,
+    XOctagon, Stethoscope, CheckCircle2,
     MessageSquare, ChevronRight, X
 } from 'lucide-react';
 import { api } from '@/services/api';

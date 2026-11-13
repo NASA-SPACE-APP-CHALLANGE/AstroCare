@@ -1,6 +1,6 @@
 import React from 'react';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
-import { TrendingUp, TrendingDown, Minus, ArrowRight, ShieldAlert, Cpu } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { MetricStats } from '@/types';
 

@@ -24,7 +24,9 @@ export const Navbar: React.FC = () => {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    useEffect(() => { setMobileOpen(false); }, [location]);
+    useEffect(() => {
+        setMobileOpen(prev => (prev ? false : prev));
+    }, [location.pathname]);
 
     return (
         <>

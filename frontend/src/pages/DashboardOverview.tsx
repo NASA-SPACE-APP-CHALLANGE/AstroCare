@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-    RefreshCw, Pause, Play, Clock, Database, Satellite,
-    AlertTriangle, ShieldCheck, Heart, Activity, Thermometer,
-    Moon, Zap, Radio, Bell, ArrowRight, UserCheck, Stethoscope, ChevronRight
+    RefreshCw, Pause, Play, Satellite,
+    Zap, Bell, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { api } from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { MetricCard } from '@/components/MetricCard';
-import type { MetricStats, HealthCheck, Alert } from '@/types';
+import type { MetricStats, Alert } from '@/types';
 
 const MISSION_START = new Date('2025-01-01T00:00:00Z');
 
@@ -21,26 +20,23 @@ function formatElapsed(ms: number) {
 }
 
 export const DashboardOverview: React.FC = () => {
-    const { activeAstronautId, activeAstronaut, allAstronauts, setActiveAstronautId, user } = useAuth();
+    const { activeAstronautId, activeAstronaut, allAstronauts, setActiveAstronautId } = useAuth();
 
     const [metrics, setMetrics] = useState<MetricStats[]>([]);
-    const [health, setHealth] = useState<HealthCheck | null>(null);
     const [recentAlerts, setRecentAlerts] = useState<Alert[]>([]);
     const [loading, setLoading] = useState(true);
     const [paused, setPaused] = useState(false);
-    const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+    const [lastUpdate, setLastUpdate] = useState<Date>(() => new Date());
     const [elapsed, setElapsed] = useState('');
     const [stepping, setStepping] = useState(false);
 
     const loadData = useCallback(async () => {
         try {
-            const [m, h, a] = await Promise.all([
+            const [m, a] = await Promise.all([
                 api.metrics(activeAstronautId),
-                api.health(),
                 api.alerts({ limit: 4, acknowledged: false }),
             ]);
             setMetrics(m);
-            setHealth(h);
             setRecentAlerts(a.alerts);
             setLastUpdate(new Date());
         } catch (err) {
@@ -87,13 +83,6 @@ export const DashboardOverview: React.FC = () => {
             console.error('Acknowledge error', err);
         }
     };
-
-    const anomalyCount = metrics.reduce((acc, m) => {
-        if (m.latest_value !== null && m.normal_range) {
-            if (m.latest_value < m.normal_range.min || m.latest_value > m.normal_range.max) return acc + 1;
-        }
-        return acc;
-    }, 0);
 
     return (
         <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

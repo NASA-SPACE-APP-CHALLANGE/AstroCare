@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Rocket, ShieldCheck, UserCheck, Stethoscope, AlertCircle, Sparkles } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { ShieldCheck, UserCheck, Stethoscope, AlertCircle, Sparkles } from 'lucide-react';
 import { AstroCareLogo } from '@/components/Logo';
 
 export const LoginPage: React.FC = () => {
-    const { login, loginAsRole, user } = useAuth();
+    const { login, loginAsRole } = useAuth();
     const navigate = useNavigate();
 
     const [username, setUsername] = useState('astronaut');

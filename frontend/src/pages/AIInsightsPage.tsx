@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Brain, Play, AlertTriangle, CheckCircle, XCircle,
-    BarChart2, Info, RefreshCw, ArrowRight, ShieldCheck,
+    Brain, Play, CheckCircle, XCircle,
+    Info, RefreshCw,
     Moon, Heart, Radio, ChevronRight, Sparkles
 } from 'lucide-react';
 import {
@@ -9,7 +9,7 @@ import {
     ResponsiveContainer, BarChart, Bar, Cell
 } from 'recharts';
 import { api } from '@/services/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import type { AnomalyRunResult, Anomaly, HealthTrendsResponse } from '@/types';
 
 const METRIC_LABELS: Record<string, string> = {
@@ -41,7 +41,7 @@ const ScoreBar: React.FC<{ score: number | null }> = ({ score }) => {
 };
 
 export const AIInsightsPage: React.FC = () => {
-    const { activeAstronautId, activeAstronaut } = useAuth();
+    const { activeAstronautId } = useAuth();
     const [result, setResult] = useState<AnomalyRunResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Download, Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Legend, AreaChart, Area
@@ -47,7 +47,7 @@ export const MissionDataPage: React.FC = () => {
         try {
             const r = await api.timeSeries(selectedMetric, undefined, undefined, 300);
             setTsData(r.data || r.points || []);
-        } catch (e) {
+        } catch {
             setTsData([]);
         } finally { setTsLoading(false); }
     }, [selectedMetric]);
@@ -58,7 +58,7 @@ export const MissionDataPage: React.FC = () => {
             const r = await api.readings({ page, page_size: 20, search: search || undefined, order: 'desc' });
             setReadings(r.readings);
             setTotal(r.total);
-        } catch (e) { } finally { setTableLoading(false); }
+        } catch { } finally { setTableLoading(false); }
     }, [page, search]);
 
     const loadCompare = useCallback(async () => {
@@ -79,7 +79,7 @@ export const MissionDataPage: React.FC = () => {
                 merged.push(point);
             }
             setCompareData(merged);
-        } catch (e) { }
+        } catch { }
     }, [compareMetrics]);
 
     useEffect(() => { loadTimeSeries(); }, [loadTimeSeries]);
