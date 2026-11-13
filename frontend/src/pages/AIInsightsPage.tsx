@@ -769,7 +769,7 @@ export const AIInsightsPage: React.FC = () => {
                                             ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                                         </td>
                                         <td className="mono-val">
-                                            {a.value !== null ? `${a.value.toFixed(2)} ${a.unit || ''}` : '—'}
+                                            {a.value != null && typeof a.value === 'number' ? `${a.value.toFixed(2)} ${a.unit || ''}` : '—'}
                                         </td>
                                         <td><ScoreBar score={a.anomaly_score} /></td>
                                         <td>

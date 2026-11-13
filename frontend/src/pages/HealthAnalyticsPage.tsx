@@ -353,7 +353,7 @@ export const HealthAnalyticsPage: React.FC = () => {
                                                         {val !== null ? `${val} ${activeConfig.unit}` : 'Unavailable'}
                                                     </div>
                                                     <div style={{ color: 'var(--text-secondary)', fontSize: '0.72rem', marginTop: 4 }}>
-                                                        Baseline: {activeConfig.baselineRef} {activeConfig.unit} (Δ {(val !== null ? (Number(val) - activeConfig.baselineRef).toFixed(1) : '—')})
+                                                        Baseline: {activeConfig.baselineRef} {activeConfig.unit} (Δ {(val != null && !isNaN(Number(val)) ? (Number(val) - activeConfig.baselineRef).toFixed(1) : '—')})
                                                     </div>
                                                     {p.is_anomaly && (
                                                         <div style={{

@@ -180,7 +180,10 @@ export const AstronautProfilePage: React.FC = () => {
     // ==========================================
     // STATE 2: SUCCESS STATE
     // ==========================================
-    const radPercentage = Math.min(100, (activeAstronaut.current_cumulative_radiation_msv / activeAstronaut.max_radiation_limit_msv) * 100);
+    const radPercentage = Math.min(
+        100,
+        ((activeAstronaut.current_cumulative_radiation_msv ?? 42.6) / (activeAstronaut.max_radiation_limit_msv || 200)) * 100
+    );
 
     return (
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
@@ -394,7 +397,7 @@ export const AstronautProfilePage: React.FC = () => {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.8rem' }}>
                                     <span style={{ color: 'var(--text-secondary)' }}>Cumulative Radiation:</span>
                                     <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--warning-amber)', fontWeight: 600 }}>
-                                        {activeAstronaut.current_cumulative_radiation_msv.toFixed(1)} / {activeAstronaut.max_radiation_limit_msv} mSv
+                                        {(activeAstronaut.current_cumulative_radiation_msv ?? 42.6).toFixed(1)} / {activeAstronaut.max_radiation_limit_msv ?? 200} mSv
                                     </span>
                                 </div>
                                 <div className="progress-bar" style={{ height: 8 }}>

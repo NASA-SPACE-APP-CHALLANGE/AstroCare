@@ -19,6 +19,7 @@ function getStatusColor(metric: string, value: number | null, range: { min: numb
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
+        const val = payload[0]?.value;
         return (
             <div style={{
                 background: 'rgba(11,16,38,0.95)',
@@ -27,7 +28,7 @@ const CustomTooltip = ({ active, payload }: any) => {
                 fontFamily: 'var(--font-mono)', fontSize: '0.75rem',
                 color: 'var(--electric-cyan)',
             }}>
-                {payload[0].value !== null ? payload[0].value.toFixed(1) : 'Unavailable'}
+                {typeof val === 'number' && !isNaN(val) ? val.toFixed(1) : 'Unavailable'}
             </div>
         );
     }
@@ -35,11 +36,22 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 export const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
-    const { label, unit, latest_value, change_from_prev, sparkline, normal_range, latest_timestamp, count, status = 'simulated' } = metric;
+    const rawVal = metric?.latest_value ?? (metric as any)?.current_value ?? (metric as any)?.value ?? null;
+    const latest_value = typeof rawVal === 'number' && !isNaN(rawVal) ? rawVal : null;
+    const label = metric?.label || (metric as any)?.display_name || metric?.metric || 'Metric';
+    const unit = metric?.unit || '';
+    const rawChange = metric?.change_from_prev;
+    const change_from_prev = typeof rawChange === 'number' && !isNaN(rawChange) ? rawChange : null;
+    const sparkline = metric?.sparkline || [];
+    const normal_range = metric?.normal_range || (metric as any)?.normal || null;
+    const latest_timestamp = metric?.latest_timestamp || null;
+    const count = metric?.count ?? 288;
+    const status = metric?.status || (latest_value !== null ? 'measured' : 'unavailable');
 
     const isUnavailable = latest_value === null;
-    const statusColor = isUnavailable ? 'var(--text-muted)' : getStatusColor(metric.metric, latest_value, normal_range);
-    const sparkData = (sparkline || []).map((v, i) => ({ i, v }));
+    const metricKey = metric?.metric || (metric as any)?.metric_name || '';
+    const statusColor = isUnavailable ? 'var(--text-muted)' : getStatusColor(metricKey, latest_value, normal_range);
+    const sparkData = (sparkline || []).map((v, i) => ({ i, v: typeof v === 'number' ? v : 0 }));
 
     const changeIcon = change_from_prev === null ? null
         : change_from_prev > 0 ? <TrendingUp size={13} />
@@ -147,7 +159,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({ metric }) => {
                     </div>
                     <div className="progress-bar">
                         <div className="progress-bar-fill" style={{
-                            width: `${Math.min(100, Math.max(0, ((latest_value - normal_range.min) / (normal_range.max - normal_range.min)) * 100))}%`,
+                            width: `${Math.min(100, Math.max(0, ((latest_value - normal_range.min) / ((normal_range.max - normal_range.min) || 1)) * 100))}%`,
                             background: statusColor,
                         }} />
                     </div>

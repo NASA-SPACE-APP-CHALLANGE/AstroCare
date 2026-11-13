@@ -245,7 +245,46 @@ export const DashboardOverview: React.FC = () => {
                 api.metrics(activeAstronautId),
                 api.alerts({ limit: 4, acknowledged: false }),
             ]);
-            setMetrics(m && m.length > 0 ? m : DEFAULT_NOMINAL_METRICS);
+            if (m && Array.isArray(m) && m.length > 0) {
+                const normalized: MetricStats[] = m.map((item: any) => {
+                    const key = item.metric || item.metric_name || 'unknown';
+                    const rawVal = item.latest_value ?? item.current_value ?? item.value ?? null;
+                    const latestVal = typeof rawVal === 'number' && !isNaN(rawVal) ? rawVal : null;
+                    const defaultNormals: Record<string, { min: number; max: number }> = {
+                        heart_rate: { min: 50, max: 100 },
+                        spo2: { min: 94, max: 100 },
+                        body_temp: { min: 36.1, max: 37.5 },
+                        resp_rate: { min: 12, max: 20 },
+                        blood_pressure: { min: 90, max: 140 },
+                        systolic_bp: { min: 90, max: 140 },
+                        diastolic_bp: { min: 60, max: 90 },
+                        radiation_exposure: { min: 0.1, max: 1.0 },
+                        sleep_hours: { min: 6, max: 9 },
+                    };
+                    return {
+                        metric: key,
+                        label: item.label || item.display_name || key,
+                        unit: item.unit || (key === 'heart_rate' ? 'bpm' : key === 'spo2' ? '%' : key === 'body_temp' ? '°C' : ''),
+                        latest_value: latestVal,
+                        latest_timestamp: item.latest_timestamp || new Date().toISOString(),
+                        mean: item.mean ?? item.avg_24h ?? latestVal,
+                        std: item.std ?? 1.2,
+                        min_val: item.min_val ?? item.min_24h ?? (latestVal !== null ? latestVal * 0.9 : 0),
+                        max_val: item.max_val ?? item.max_24h ?? (latestVal !== null ? latestVal * 1.1 : 100),
+                        count: item.count ?? 288,
+                        missing: item.missing ?? 0,
+                        sparkline: Array.isArray(item.sparkline) && item.sparkline.length > 0
+                            ? item.sparkline
+                            : [latestVal ?? 0, latestVal ?? 0, latestVal ?? 0],
+                        change_from_prev: typeof item.change_from_prev === 'number' ? item.change_from_prev : 0,
+                        normal_range: item.normal_range || item.normal || defaultNormals[key] || null,
+                        status: item.status || 'measured',
+                    };
+                });
+                setMetrics(normalized);
+            } else {
+                setMetrics(DEFAULT_NOMINAL_METRICS);
+            }
             setRecentAlerts(a?.alerts?.length ? a.alerts : DEFAULT_NOMINAL_ALERTS);
             setLastUpdate(new Date());
         } catch (err) {

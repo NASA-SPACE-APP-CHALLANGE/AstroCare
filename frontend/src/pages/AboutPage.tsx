@@ -237,7 +237,7 @@ export const AboutPage: React.FC = () => (
                 <a href="https://github.com/VaishnavSreejan" target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm">
                     <Github size={14} /> GitHub
                 </a>
-                <span className="badge badge-muted" style={{ alignSelf: 'center' }}>NASA Space Apps Challenge 2025</span>
+                <span className="badge badge-muted" style={{ alignSelf: 'center' }}>NASA Space Apps Challenge 2026</span>
             </div>
         </div>
     </div>
