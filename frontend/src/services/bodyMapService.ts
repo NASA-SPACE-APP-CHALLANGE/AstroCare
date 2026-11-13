@@ -360,3 +360,82 @@ export function getBodySystemById(id: string): BodySystemData | undefined {
     return BODY_SYSTEMS.find(s => s.id === id);
 }
 
+export function getBodySystemsForAstronaut(astronautId: string = 'ASTRO-01'): BodySystemData[] {
+    const systems: BodySystemData[] = JSON.parse(JSON.stringify(BODY_SYSTEMS));
+
+    if (astronautId === 'ASTRO-01') {
+        // CDR Alex Vance: Long-duration SANS monitoring
+        const eyes = systems.find(s => s.id === 'eyes');
+        if (eyes) {
+            eyes.status = 'amber';
+            eyes.statusLabel = 'SANS Grade 1 Edema Surveillance';
+            eyes.detectedAbnormalities = [
+                'Mild optic disc elevation (Grade 1 Frisén) detected on ultrasound.',
+                'Pre-EVA choroidal engorgement consistent with microgravity cephalad fluid shift.',
+            ];
+            eyes.relevantIndicators[0] = { name: 'Optic Nerve Sheath Diam.', value: '6.2 mm (+18%)', status: 'warning' };
+        }
+    } else if (astronautId === 'ASTRO-02') {
+        // Dr. Sarah Chen: Chief Medical Officer, Bone Density Check
+        const bones = systems.find(s => s.id === 'bones');
+        if (bones) {
+            bones.status = 'amber';
+            bones.statusLabel = 'Trabecular Demineralization Risk';
+            bones.detectedAbnormalities = [
+                'Urinary deoxypyridinoline +12% above pre-flight baseline.',
+                'High-load heel drop protocol recommended.',
+            ];
+            bones.relevantIndicators[0] = { name: 'Trochanter Bone Mineral Loss', value: '-0.9%/mo', status: 'warning' };
+        }
+        const heart = systems.find(s => s.id === 'heart');
+        if (heart) {
+            heart.statusLabel = 'Athletic Sinus Rhythm (58 BPM)';
+            heart.relevantIndicators[0] = { name: 'Resting Heart Rate', value: '58.0 bpm', status: 'nominal' };
+        }
+    } else if (astronautId === 'ASTRO-03') {
+        // Marcus Thorne: Sympathetic Excursion & Muscular Fatigue
+        const heart = systems.find(s => s.id === 'heart');
+        if (heart) {
+            heart.status = 'amber';
+            heart.statusLabel = 'Elevated Sympathetic Tone (Post-EVA Spike)';
+            heart.detectedAbnormalities = [
+                'Transient sinus tachycardia (116 bpm) recorded during high-torque robotic arm maintenance.',
+                'HRV RMSSD decreased to 32 ms indicating transient autonomic stress.',
+            ];
+            heart.relevantIndicators[0] = { name: 'Resting Heart Rate', value: '68.4 bpm', status: 'warning' };
+        }
+        const muscles = systems.find(s => s.id === 'muscles');
+        if (muscles) {
+            muscles.status = 'amber';
+            muscles.statusLabel = 'Quadriceps Fatigue Index Margin';
+            muscles.detectedAbnormalities = [
+                'Post-maintenance knee extensor torque output down 6.5%.',
+                'Recommended: 15-min active recovery cycling + high-protein replenishment.',
+            ];
+        }
+    } else if (astronautId === 'ASTRO-04') {
+        // Elena Rostova: Circadian Delay & Mild Immune Reactivation
+        const brain = systems.find(s => s.id === 'brain');
+        if (brain) {
+            brain.status = 'amber';
+            brain.statusLabel = 'Circadian Phase Delay';
+            brain.detectedAbnormalities = [
+                'Sleep onset latency delayed 48 minutes.',
+                'REM sleep fraction decreased by 14% on flight days 138-142.',
+            ];
+            brain.relevantIndicators[0] = { name: 'Sleep Quality Index', value: '72% (Low REM)', status: 'warning' };
+        }
+        const immune = systems.find(s => s.id === 'immune');
+        if (immune) {
+            immune.status = 'amber';
+            immune.statusLabel = 'EBV Reactivation Surveillance';
+            immune.detectedAbnormalities = [
+                'Salivary cortisol slightly elevated; subclinical EBV DNA shed detected on PCR swab.',
+            ];
+        }
+    }
+
+    return systems;
+}
+
+

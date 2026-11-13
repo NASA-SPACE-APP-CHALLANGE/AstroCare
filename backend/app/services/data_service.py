@@ -399,7 +399,7 @@ def get_dataset_info() -> dict:
     return {
         "name": "Artemis & ISS Simulated Astronaut Physiological Telemetry",
         "source": "AstroCare Synthetic Mission Telemetry Engine (AlgoX Space Health Lab)",
-        "documentation_url": "https://github.com/VaishnavSreejan/Kino-Movie-Recommendation",
+        "documentation_url": "https://github.com/NASA-SPACE-APP-CHALLANGE/Kino-Movie-Recommendation",
         "variables": variables,
         "date_range": {
             "start": first_row["timestamp"] if first_row else "2025-01-01 00:00:00",

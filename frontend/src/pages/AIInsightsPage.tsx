@@ -105,7 +105,7 @@ const ScoreBar: React.FC<{ score: number | null }> = ({ score }) => {
 };
 
 export const AIInsightsPage: React.FC = () => {
-    const { activeAstronautId } = useAuth();
+    const { activeAstronautId, setActiveAstronautId, allAstronauts, activeAstronaut } = useAuth();
     const [result, setResult] = useState<AnomalyRunResult | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -123,7 +123,7 @@ export const AIInsightsPage: React.FC = () => {
 
     useEffect(() => {
         Promise.all([
-            api.anomalies(undefined, true, 50),
+            api.anomalies(undefined, true, 50, activeAstronautId),
             api.healthTrends('7d', activeAstronautId),
         ]).then(([anom, tr]) => {
             if (anom && anom.length > 0) setExistingAnomalies(anom);
@@ -139,10 +139,10 @@ export const AIInsightsPage: React.FC = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await api.runAnomalyAnalysis(contamination, 500);
+            const res = await api.runAnomalyAnalysis(contamination, 500, activeAstronautId);
             setResult(res);
             const [updated, tr] = await Promise.all([
-                api.anomalies(undefined, true, 50),
+                api.anomalies(undefined, true, 50, activeAstronautId),
                 api.healthTrends('7d', activeAstronautId),
             ]);
             setExistingAnomalies(updated);
@@ -264,6 +264,30 @@ export const AIInsightsPage: React.FC = () => {
                     </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            CREW MEMBER:
+                        </label>
+                        <select
+                            className="select"
+                            style={{
+                                padding: '0.35rem 0.65rem',
+                                fontSize: '0.8rem',
+                                borderColor: 'rgba(146, 117, 255, 0.4)',
+                                color: 'var(--stellar-white)',
+                                background: 'rgba(11, 16, 38, 0.9)',
+                            }}
+                            value={activeAstronautId}
+                            onChange={e => setActiveAstronautId(e.target.value)}
+                        >
+                            {allAstronauts.map(a => (
+                                <option key={a.astronaut_id} value={a.astronaut_id}>
+                                    {a.name} ({a.astronaut_id})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                             CONTAMINATION SENSITIVITY:

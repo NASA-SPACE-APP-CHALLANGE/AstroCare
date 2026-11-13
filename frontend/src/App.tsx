@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Footer } from '@/components/Footer';
+import { ScrollToTop } from '@/components/ScrollToTop';
 
 // Code-split dynamic page imports for optimal performance
 const LandingPage = lazy(() => import('@/pages/LandingPage').then(m => ({ default: m.LandingPage })));
@@ -35,6 +36,7 @@ const PageLoadingFallback: React.FC = () => (
 const App: React.FC = () => {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <div style={{ position: 'relative', minHeight: '100vh', background: 'var(--deep-space)' }}>
         {/* Animated starfield always present */}
         <StarfieldBackground />

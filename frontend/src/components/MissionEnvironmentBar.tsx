@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Compass, Globe, Radio, AlertCircle, Info, ChevronDown, Check,
     Shield, Wind, Cpu, Gauge
@@ -15,11 +15,39 @@ export const MissionEnvironmentBar: React.FC<{ onEnvironmentChange?: (config: Mi
     const [activeConfig, setActiveConfig] = useState<MissionEnvironmentConfig>(getActiveEnvironmentConfig());
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const current = getActiveEnvironmentConfig();
         setActiveConfig(current);
     }, []);
+
+    // Close dropdown on outside click or escape key
+    useEffect(() => {
+        if (!dropdownOpen) return;
+
+        const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('touchstart', handleOutsideClick);
+        document.addEventListener('keydown', handleEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('touchstart', handleOutsideClick);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [dropdownOpen]);
 
     const handleSelect = (envId: EnvironmentId) => {
         const updated = setActiveEnvironmentConfig(envId);
@@ -30,6 +58,9 @@ export const MissionEnvironmentBar: React.FC<{ onEnvironmentChange?: (config: Mi
 
     return (
         <div style={{
+            position: 'relative',
+            zIndex: dropdownOpen ? 1000 : 20,
+            overflow: 'visible',
             background: 'rgba(11, 16, 38, 0.85)',
             border: '1px solid rgba(83, 231, 255, 0.25)',
             borderRadius: 'var(--radius-lg)',
@@ -110,15 +141,17 @@ export const MissionEnvironmentBar: React.FC<{ onEnvironmentChange?: (config: Mi
                     </div>
 
                     {/* Switch Environment Dropdown Trigger */}
-                    <div style={{ position: 'relative' }}>
+                    <div ref={dropdownRef} style={{ position: 'relative', zIndex: 1001 }}>
                         <button
                             type="button"
                             onClick={() => setDropdownOpen(!dropdownOpen)}
                             className="btn-primary"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.9rem', fontSize: '0.8rem' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem 0.9rem', fontSize: '0.8rem', cursor: 'pointer' }}
+                            aria-expanded={dropdownOpen}
+                            aria-haspopup="listbox"
                         >
                             <span>Switch Environment</span>
-                            <ChevronDown size={14} />
+                            <ChevronDown size={14} style={{ transform: dropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s ease' }} />
                         </button>
 
                         {/* Dropdown Menu */}
@@ -126,15 +159,17 @@ export const MissionEnvironmentBar: React.FC<{ onEnvironmentChange?: (config: Mi
                             <div style={{
                                 position: 'absolute',
                                 right: 0,
-                                top: '115%',
-                                width: 310,
-                                background: 'rgba(11, 16, 38, 0.98)',
-                                border: '1px solid rgba(83, 231, 255, 0.35)',
+                                top: 'calc(100% + 8px)',
+                                width: 320,
+                                maxWidth: '90vw',
+                                background: 'rgba(7, 12, 30, 0.98)',
+                                border: '1px solid var(--border-cyan, rgba(83, 231, 255, 0.45))',
                                 borderRadius: 'var(--radius-md)',
-                                boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
-                                zIndex: 50,
+                                boxShadow: '0 16px 48px rgba(0,0,0,0.85), 0 0 24px rgba(83,231,255,0.2)',
+                                zIndex: 9999,
                                 padding: '0.5rem',
-                                backdropFilter: 'blur(16px)',
+                                backdropFilter: 'blur(24px)',
+                                WebkitBackdropFilter: 'blur(24px)',
                             }}>
                                 <div style={{ fontSize: '0.7rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', padding: '0.4rem 0.6rem', borderBottom: '1px solid rgba(83,231,255,0.1)' }}>
                                     SELECT OPERATIONAL DOMAIN

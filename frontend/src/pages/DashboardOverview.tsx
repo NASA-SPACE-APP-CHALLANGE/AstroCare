@@ -13,6 +13,7 @@ import { HumanBodyMap } from '@/components/HumanBodyMap';
 import { DailyRoutineChecklist } from '@/components/DailyRoutineChecklist';
 import { BoxBreathingTool } from '@/components/BoxBreathingTool';
 import { SymptomCheckerModal } from '@/components/SymptomCheckerModal';
+import { getActiveEnvironmentConfig, type MissionEnvironmentConfig } from '@/services/missionEnvironmentService';
 import type { MetricStats, Alert } from '@/types';
 
 const MISSION_START = new Date('2025-01-01T00:00:00Z');
@@ -238,13 +239,18 @@ export const DashboardOverview: React.FC = () => {
     const [elapsed, setElapsed] = useState('');
     const [stepping, setStepping] = useState(false);
     const [symptomModalOpen, setSymptomModalOpen] = useState(false);
+    const [envConfig, setEnvConfig] = useState<MissionEnvironmentConfig>(getActiveEnvironmentConfig());
 
     const loadData = useCallback(async () => {
+        const targetAstro = activeAstronautId;
         try {
             const [m, a] = await Promise.all([
-                api.metrics(activeAstronautId),
-                api.alerts({ limit: 4, acknowledged: false }),
+                api.metrics(targetAstro),
+                api.alerts({ limit: 4, acknowledged: false, astronaut_id: targetAstro }),
             ]);
+            // Prevent stale promise from overwriting if user switched astronaut in between
+            if (targetAstro !== activeAstronautId) return;
+
             if (m && Array.isArray(m) && m.length > 0) {
                 const normalized: MetricStats[] = m.map((item: any) => {
                     const key = item.metric || item.metric_name || 'unknown';
@@ -285,12 +291,12 @@ export const DashboardOverview: React.FC = () => {
             } else {
                 setMetrics(DEFAULT_NOMINAL_METRICS);
             }
-            setRecentAlerts(a?.alerts?.length ? a.alerts : DEFAULT_NOMINAL_ALERTS);
+            setRecentAlerts(a?.alerts ? a.alerts : []);
             setLastUpdate(new Date());
         } catch (err) {
             console.warn('Backend offline, using nominal telemetry simulation:', err);
             setMetrics(prev => (prev.length > 0 ? prev : DEFAULT_NOMINAL_METRICS));
-            setRecentAlerts(prev => (prev.length > 0 ? prev : DEFAULT_NOMINAL_ALERTS));
+            setRecentAlerts([]);
             setLastUpdate(new Date());
         } finally {
             setLoading(false);
@@ -418,7 +424,7 @@ export const DashboardOverview: React.FC = () => {
             </div>
 
             {/* Mission Environment & Gravity Context Selector Bar */}
-            <MissionEnvironmentBar />
+            <MissionEnvironmentBar onEnvironmentChange={setEnvConfig} />
 
             {/* Space Station Environmental Telemetry Strip — Orbital Glass Card */}
             <div
@@ -429,29 +435,39 @@ export const DashboardOverview: React.FC = () => {
                     gap: '0.85rem',
                     padding: '0.9rem 1.25rem',
                     alignItems: 'center',
+                    position: 'relative',
+                    zIndex: 1,
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <span className="status-dot active" />
                     <div>
                         <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>HABITAT ENVIRONMENT</div>
-                        <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--success-mint)', fontFamily: 'var(--font-mono)' }}>NOMINAL CABIN ATM</div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--success-mint)', fontFamily: 'var(--font-mono)' }}>
+                            {envConfig.name.toUpperCase()}
+                        </div>
                     </div>
                 </div>
 
                 <div>
                     <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>CABIN O₂ CONCENTRATION</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--electric-cyan)', fontFamily: 'var(--font-mono)' }}>21.2% [MEASURED]</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--electric-cyan)', fontFamily: 'var(--font-mono)' }}>
+                        {envConfig.ambientO2Percent.toFixed(1)}% [{envConfig.id === 'iss_leo' ? 'MEASURED' : 'SIMULATED'}]
+                    </div>
                 </div>
 
                 <div>
                     <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>CABIN TOTAL PRESSURE</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--stellar-white)', fontFamily: 'var(--font-mono)' }}>101.3 kPa [MEASURED]</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--stellar-white)', fontFamily: 'var(--font-mono)' }}>
+                        {envConfig.ambientPressureKpa.toFixed(1)} kPa [{envConfig.id === 'iss_leo' ? 'MEASURED' : 'SIMULATED'}]
+                    </div>
                 </div>
 
                 <div>
-                    <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>ORBITAL REGIME</div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--aurora-violet)', fontFamily: 'var(--font-mono)' }}>408 KM LEO / 16 ORBITS/DAY</div>
+                    <div style={{ fontSize: '0.68rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>GRAVITY & COMM LATENCY</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--aurora-violet)', fontFamily: 'var(--font-mono)' }}>
+                        {envConfig.gravity} · {envConfig.communicationDelayLabel.split('(')[0].trim()}
+                    </div>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
@@ -464,7 +480,7 @@ export const DashboardOverview: React.FC = () => {
                         color: 'var(--electric-cyan)',
                         border: '1px solid rgba(83, 231, 255, 0.25)',
                     }}>
-                        LIVE STREAM ACTIVE
+                        [{envConfig.id === 'iss_leo' ? 'MEASURED TELEMETRY' : 'MISSION CONTEXT'}]
                     </span>
                 </div>
             </div>
@@ -618,7 +634,7 @@ export const DashboardOverview: React.FC = () => {
             </div>
 
             {/* Interactive Anatomical Human Body Map */}
-            <HumanBodyMap />
+            <HumanBodyMap astronautId={activeAstronautId} />
 
             {/* Daily Operational Routine Checklist & Guided Autonomic Box Breathing */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.5rem' }}>
@@ -627,23 +643,29 @@ export const DashboardOverview: React.FC = () => {
             </div>
 
             {/* Recent Alerts & Quick Triage Strip */}
-            {recentAlerts.length > 0 && (
-                <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(255, 100, 124, 0.3)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className="glass-card" style={{ padding: '1.25rem', border: `1px solid ${recentAlerts.length > 0 ? 'rgba(255, 100, 124, 0.3)' : 'rgba(93, 242, 180, 0.25)'}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: recentAlerts.length > 0 ? '1rem' : 0, flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        {recentAlerts.length > 0 ? (
                             <Bell size={18} color="var(--critical-coral)" />
-                            <h4 style={{ fontSize: '1rem', color: 'var(--stellar-white)', margin: 0 }}>
-                                Active Telemetry Alerts ({recentAlerts.length})
-                            </h4>
-                        </div>
-                        <Link
-                            to="/dashboard/alerts"
-                            style={{ fontSize: '0.8rem', color: 'var(--electric-cyan)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
-                        >
-                            Open Alert Center <ArrowRight size={12} />
-                        </Link>
+                        ) : (
+                            <CheckCircle2 size={18} color="var(--success-mint)" />
+                        )}
+                        <h4 style={{ fontSize: '0.95rem', color: 'var(--stellar-white)', margin: 0 }}>
+                            {recentAlerts.length > 0
+                                ? `Active Telemetry Alerts (${recentAlerts.length}) — ${activeAstronaut?.name || activeAstronautId}`
+                                : `All Telemetry Nominal — Zero Active Alerts for ${activeAstronaut?.name || activeAstronautId}`}
+                        </h4>
                     </div>
+                    <Link
+                        to="/dashboard/alerts"
+                        style={{ fontSize: '0.8rem', color: 'var(--electric-cyan)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                    >
+                        Open Alert Center <ArrowRight size={12} />
+                    </Link>
+                </div>
 
+                {recentAlerts.length > 0 ? (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '0.85rem' }}>
                         {recentAlerts.map(a => (
                             <div
@@ -675,11 +697,11 @@ export const DashboardOverview: React.FC = () => {
                                         </span>
                                     </div>
                                     <div style={{ fontSize: '0.78rem', color: 'var(--text-primary)', lineHeight: 1.4 }}>
-                                        {a.explanation}
+                                        {a.explanation || a.message}
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.3rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.3rem', flexWrap: 'wrap', gap: '0.4rem' }}>
                                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                                         Type: {a.alert_type === 'health_concern' ? 'Physiological' : 'Sensor Issue'}
                                     </span>
@@ -695,8 +717,12 @@ export const DashboardOverview: React.FC = () => {
                             </div>
                         ))}
                     </div>
-                </div>
-            )}
+                ) : (
+                    <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                        All physiological sensor streams for {activeAstronaut?.name || activeAstronautId} continuously validated against NASA Spaceflight Human-System Standard NASA-STD-3001. No excursions flagged.
+                    </div>
+                )}
+            </div>
 
             {/* Mission Operations Quick Access — Subsystem Navigation Grid */}
             <div className="glass-card" style={{ padding: '1.5rem', border: '1px solid rgba(145, 160, 190, 0.18)' }}>

@@ -5,6 +5,7 @@ import {
     ResponsiveContainer, Legend, AreaChart, Area
 } from 'recharts';
 import { api } from '@/services/api';
+import { useAuth } from '@/hooks/useAuth';
 import type { TimeSeriesPoint } from '@/types';
 
 const METRICS = [
@@ -31,6 +32,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const MissionDataPage: React.FC = () => {
+    const { activeAstronautId, setActiveAstronautId, allAstronauts, activeAstronaut } = useAuth();
     const [selectedMetric, setSelectedMetric] = useState('heart_rate');
     const [tsData, setTsData] = useState<TimeSeriesPoint[]>([]);
     const [tsLoading, setTsLoading] = useState(false);
@@ -88,7 +90,7 @@ export const MissionDataPage: React.FC = () => {
     const loadTimeSeries = useCallback(async () => {
         setTsLoading(true);
         try {
-            const r = await api.timeSeries(selectedMetric, undefined, undefined, 300);
+            const r = await api.timeSeries(selectedMetric, undefined, undefined, 300, activeAstronautId);
             if (r.data || r.points) {
                 setTsData(r.data || r.points);
             } else {
@@ -97,12 +99,18 @@ export const MissionDataPage: React.FC = () => {
         } catch {
             setTsData(generateFallbackTimeSeries(selectedMetric));
         } finally { setTsLoading(false); }
-    }, [selectedMetric]);
+    }, [selectedMetric, activeAstronautId]);
 
     const loadTable = useCallback(async () => {
         setTableLoading(true);
         try {
-            const r = await api.readings({ page, page_size: 20, search: search || undefined, order: 'desc' });
+            const r = await api.readings({
+                page,
+                page_size: 20,
+                search: search || undefined,
+                order: 'desc',
+                astronaut_id: activeAstronautId,
+            });
             if (r.readings && r.readings.length > 0) {
                 setReadings(r.readings);
                 setTotal(r.total);
@@ -114,7 +122,7 @@ export const MissionDataPage: React.FC = () => {
             setReadings(generateFallbackReadings());
             setTotal(500);
         } finally { setTableLoading(false); }
-    }, [page, search]);
+    }, [page, search, activeAstronautId]);
 
     const loadCompare = useCallback(async () => {
         if (compareMetrics.length === 0) {
@@ -122,7 +130,7 @@ export const MissionDataPage: React.FC = () => {
             return;
         }
         try {
-            const results = await Promise.all(compareMetrics.map(m => api.timeSeries(m, undefined, undefined, 200)));
+            const results = await Promise.all(compareMetrics.map(m => api.timeSeries(m, undefined, undefined, 200, activeAstronautId)));
             const normalized = results.map((r, idx) => r.data || r.points || generateFallbackTimeSeries(compareMetrics[idx]));
             const merged: any[] = [];
             const len = Math.max(...normalized.map(r => r.length));
@@ -145,7 +153,7 @@ export const MissionDataPage: React.FC = () => {
             }
             setCompareData(merged);
         }
-    }, [compareMetrics]);
+    }, [compareMetrics, activeAstronautId]);
 
     useEffect(() => { loadTimeSeries(); }, [loadTimeSeries]);
     useEffect(() => { loadTable(); }, [loadTable]);
@@ -160,18 +168,44 @@ export const MissionDataPage: React.FC = () => {
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = `astrocare_readings_page${page}.csv`; a.click();
+        a.href = url; a.download = `astrocare_readings_${activeAstronautId}_page${page}.csv`; a.click();
         URL.revokeObjectURL(url);
     };
 
     return (
         <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div>
-                <div className="section-eyebrow" style={{ marginBottom: '0.4rem' }}>HISTORICAL DATA</div>
-                <h2 style={{ margin: 0 }}>Mission <span className="text-cyan">Data Explorer</span></h2>
-                <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
-                    Physiological trends, distribution analysis, and historical records
-                </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                    <div className="section-eyebrow" style={{ marginBottom: '0.4rem' }}>HISTORICAL DATA</div>
+                    <h2 style={{ margin: 0 }}>Mission <span className="text-cyan">Data Explorer</span></h2>
+                    <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
+                        Physiological trends, distribution analysis, and historical records for <strong style={{ color: 'var(--electric-cyan)' }}>{activeAstronaut?.name || activeAstronautId}</strong>
+                    </p>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                    <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>CREW MEMBER:</label>
+                    <select
+                        className="select"
+                        value={activeAstronautId}
+                        onChange={e => setActiveAstronautId(e.target.value)}
+                        style={{
+                            background: 'rgba(11, 16, 38, 0.9)',
+                            border: '1px solid rgba(83, 231, 255, 0.35)',
+                            borderRadius: 'var(--radius-md)',
+                            color: 'var(--stellar-white)',
+                            padding: '0.45rem 0.8rem',
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.85rem',
+                        }}
+                    >
+                        {allAstronauts.map(a => (
+                            <option key={a.astronaut_id} value={a.astronaut_id}>
+                                {a.name} ({a.astronaut_id})
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             {/* Trend chart */}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Zap, Database, Brain, Bell } from 'lucide-react';
 import { api } from '@/services/api';
+import { useAuth } from '@/hooks/useAuth';
 
 interface TimelineEvent {
     id: string;
@@ -13,6 +14,7 @@ interface TimelineEvent {
 }
 
 export const MissionTimelinePage: React.FC = () => {
+    const { activeAstronautId, setActiveAstronautId, allAstronauts, activeAstronaut } = useAuth();
     const [events, setEvents] = useState<TimelineEvent[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -24,7 +26,7 @@ export const MissionTimelinePage: React.FC = () => {
                     time: '2025-01-01 00:00:00',
                     label: 'System Initialized',
                     type: 'system',
-                    detail: 'AstroCare mission monitoring system initialized. Database and API ready.',
+                    detail: `AstroCare mission telemetry active for ${activeAstronaut?.name || activeAstronautId}. Continuous vitals streaming operational.`,
                     icon: Zap,
                     color: 'var(--muted-blue-gray)',
                 },
@@ -38,7 +40,7 @@ export const MissionTimelinePage: React.FC = () => {
                         time: dataInfo.date_range.start,
                         label: 'Simulated Dataset Loaded',
                         type: 'data',
-                        detail: `${dataInfo.total_records.toLocaleString()} simulated physiological readings loaded from seed dataset (DEMO-01).`,
+                        detail: `${dataInfo.total_records.toLocaleString()} simulated physiological readings loaded for ${activeAstronaut?.name || activeAstronautId}.`,
                         icon: Database,
                         color: 'var(--electric-cyan)',
                     });
@@ -57,7 +59,7 @@ export const MissionTimelinePage: React.FC = () => {
             } catch { }
 
             try {
-                const anomalies = await api.anomalies(undefined, true, 10);
+                const anomalies = await api.anomalies(undefined, true, 10, activeAstronautId);
                 if (anomalies.length > 0) {
                     const first = anomalies[anomalies.length - 1];
                     timeline.push({
@@ -65,7 +67,7 @@ export const MissionTimelinePage: React.FC = () => {
                         time: first.created_at || first.timestamp,
                         label: `Anomaly Analysis Run`,
                         type: 'analysis',
-                        detail: `${anomalies.length} anomalies detected by ${first.method || 'model'}. Run ID: ${first.run_id || 'N/A'}.`,
+                        detail: `${anomalies.length} anomalies detected for ${activeAstronautId} by ${first.method || 'model'}. Run ID: ${first.run_id || 'N/A'}.`,
                         icon: Brain,
                         color: 'var(--aurora-violet)',
                     });
@@ -84,7 +86,7 @@ export const MissionTimelinePage: React.FC = () => {
             } catch { }
 
             try {
-                const alerts = await api.alerts({ limit: 5 });
+                const alerts = await api.alerts({ limit: 5, astronaut_id: activeAstronautId });
                 for (const alert of alerts.alerts.slice(0, 3)) {
                     if (!timeline.some(e => e.time === alert.timestamp)) {
                         timeline.push({
@@ -106,16 +108,42 @@ export const MissionTimelinePage: React.FC = () => {
         };
 
         buildTimeline();
-    }, []);
+    }, [activeAstronautId, activeAstronaut]);
 
     return (
         <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div>
-                <div className="section-eyebrow" style={{ marginBottom: '0.4rem' }}>MISSION TIMELINE</div>
-                <h2 style={{ margin: 0 }}>Mission <span className="text-cyan">Event Track</span></h2>
-                <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
-                    Demonstration timeline of data coverage, analysis runs, and detected anomalies
-                </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                    <div className="section-eyebrow" style={{ marginBottom: '0.4rem' }}>MISSION TIMELINE</div>
+                    <h2 style={{ margin: 0 }}>Mission <span className="text-cyan">Event Track</span></h2>
+                    <p style={{ margin: '0.3rem 0 0', fontSize: '0.85rem' }}>
+                        Demonstration timeline of data coverage, analysis runs, and detected anomalies for <strong style={{ color: 'var(--electric-cyan)' }}>{activeAstronaut?.name || activeAstronautId}</strong>
+                    </p>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                    <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>CREW MEMBER:</label>
+                    <select
+                        className="select"
+                        value={activeAstronautId}
+                        onChange={e => setActiveAstronautId(e.target.value)}
+                        style={{
+                            background: 'rgba(11, 16, 38, 0.9)',
+                            border: '1px solid rgba(83, 231, 255, 0.35)',
+                            borderRadius: 'var(--radius-md)',
+                            color: 'var(--stellar-white)',
+                            padding: '0.45rem 0.8rem',
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.85rem',
+                        }}
+                    >
+                        {allAstronauts.map(a => (
+                            <option key={a.astronaut_id} value={a.astronaut_id}>
+                                {a.name} ({a.astronaut_id})
+                            </option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             <div className="glass-card" style={{ padding: '0.75rem 1rem', background: 'rgba(83,231,255,0.04)', border: '1px solid rgba(83,231,255,0.12)' }}>

@@ -194,7 +194,7 @@ export const Footer: React.FC = () => {
                         <span>CSA RESEARCH PARTNER</span>
                         <span>•</span>
                         <a
-                            href="https://github.com/VaishnavSreejan"
+                            href="https://github.com/NASA-SPACE-APP-CHALLANGE"
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{ color: 'var(--electric-cyan)', textDecoration: 'none' }}

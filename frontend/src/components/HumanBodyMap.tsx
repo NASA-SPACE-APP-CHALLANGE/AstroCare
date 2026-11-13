@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Activity, Shield, AlertTriangle, ExternalLink, Info, CheckCircle2,
     Eye, Brain, Heart, Wind, Bone, Dumbbell, ShieldAlert, Coffee
 } from 'lucide-react';
-import { BODY_SYSTEMS, type BodySystemData } from '@/services/bodyMapService';
+import { getBodySystemsForAstronaut, type BodySystemData } from '@/services/bodyMapService';
 
-export const HumanBodyMap: React.FC = () => {
+export const HumanBodyMap: React.FC<{ astronautId?: string }> = ({ astronautId = 'ASTRO-01' }) => {
+    const systems = useMemo(() => getBodySystemsForAstronaut(astronautId), [astronautId]);
     const [selectedSystemId, setSelectedSystemId] = useState<string>('brain');
-    const selectedSystem = BODY_SYSTEMS.find(s => s.id === selectedSystemId) || BODY_SYSTEMS[0];
+    const selectedSystem = systems.find(s => s.id === selectedSystemId) || systems[0];
 
     const getSystemIcon = (id: string) => {
         switch (id) {
@@ -38,6 +39,8 @@ export const HumanBodyMap: React.FC = () => {
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
                         <span className="telemetry-label" style={{ color: 'var(--electric-cyan)' }}>ANATOMICAL TELEMETRY MAPPING</span>
+                        <span style={{ color: 'var(--text-muted)' }}>•</span>
+                        <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--success-mint)' }}>ASTRONAUT: {astronautId}</span>
                         <span style={{ color: 'var(--text-muted)' }}>•</span>
                         <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>NASA HRP 8 SYSTEMS</span>
                     </div>
@@ -143,7 +146,7 @@ export const HumanBodyMap: React.FC = () => {
                         />
 
                         {/* Interactive Nodes for each system */}
-                        {BODY_SYSTEMS.map(sys => {
+                        {systems.map(sys => {
                             const isSelected = sys.id === selectedSystemId;
                             const color = getStatusColor(sys.status);
 
@@ -215,7 +218,7 @@ export const HumanBodyMap: React.FC = () => {
 
                     {/* Quick System Selector Pills */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', justifyContent: 'center', marginTop: '1rem', width: '100%' }}>
-                        {BODY_SYSTEMS.map(sys => (
+                        {systems.map(sys => (
                             <button
                                 key={sys.id}
                                 type="button"

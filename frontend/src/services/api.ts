@@ -59,14 +59,20 @@ export const api = {
     },
 
     // Anomaly Detection
-    runAnomalyAnalysis: (contamination = 0.05, limit = 500) => {
+    runAnomalyAnalysis: (contamination = 0.05, limit = 500, astronautId?: string) => {
         const qs = new URLSearchParams({ contamination: String(contamination), limit: String(limit) });
-        return fetchJSON<AnomalyRunResult>(`${BASE}/analyze?${qs}`, { method: 'POST' });
+        if (astronautId) qs.set('astronaut_id', astronautId);
+        return fetchJSON<AnomalyRunResult>(`${BASE}/analyze?${qs}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contamination, limit, astronaut_id: astronautId }),
+        });
     },
 
-    anomalies: (runId?: string, onlyFlagged = true, limit = 100) => {
+    anomalies: (runId?: string, onlyFlagged = true, limit = 100, astronautId?: string) => {
         const qs = new URLSearchParams({ only_flagged: String(onlyFlagged), limit: String(limit) });
         if (runId) qs.set('run_id', runId);
+        if (astronautId) qs.set('astronaut_id', astronautId);
         return fetchJSON<Anomaly[]>(`${BASE}/anomalies?${qs}`);
     },
 

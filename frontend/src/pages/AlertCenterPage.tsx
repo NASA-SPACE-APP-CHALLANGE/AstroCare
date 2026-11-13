@@ -5,6 +5,7 @@ import {
     MessageSquare, ChevronRight, X, HelpCircle, PhoneCall, Send, FileText, Download
 } from 'lucide-react';
 import { api } from '@/services/api';
+import { useAuth } from '@/hooks/useAuth';
 import { WhatShouldIDoNowModal } from '@/components/WhatShouldIDoNowModal';
 import type { Alert } from '@/types';
 
@@ -115,10 +116,12 @@ const SAMPLE_SPACEFLIGHT_ALERTS: Alert[] = [
 ];
 
 export const AlertCenterPage: React.FC = () => {
+    const { activeAstronautId, allAstronauts } = useAuth();
     const [alerts, setAlerts] = useState<Alert[]>(SAMPLE_SPACEFLIGHT_ALERTS);
     const [total, setTotal] = useState(SAMPLE_SPACEFLIGHT_ALERTS.length);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [astronautFilter, setAstronautFilter] = useState<string>(activeAstronautId || '');
     const [severityFilter, setSeverityFilter] = useState<string | undefined>(undefined);
     const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
@@ -140,6 +143,7 @@ export const AlertCenterPage: React.FC = () => {
         try {
             const r = await api.alerts({
                 search: search || undefined,
+                astronaut_id: astronautFilter || undefined,
                 severity: severityFilter,
                 alert_type: typeFilter,
                 review_status: statusFilter,
@@ -149,11 +153,13 @@ export const AlertCenterPage: React.FC = () => {
                 setAlerts(r.alerts);
                 setTotal(r.total);
             } else {
-                throw new Error('Empty alerts from API');
+                setAlerts([]);
+                setTotal(0);
             }
         } catch (e) {
             console.warn('Backend alerts offline, using calibrated spaceflight clinical alert catalog:', e);
             let filtered = [...SAMPLE_SPACEFLIGHT_ALERTS];
+            if (astronautFilter) filtered = filtered.filter(a => !(a as any).astronaut_id || (a as any).astronaut_id === astronautFilter);
             if (severityFilter) filtered = filtered.filter(a => a.severity === severityFilter);
             if (typeFilter) filtered = filtered.filter(a => a.alert_type === typeFilter);
             if (statusFilter) filtered = filtered.filter(a => a.review_status === statusFilter);
@@ -170,7 +176,7 @@ export const AlertCenterPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [search, severityFilter, typeFilter, statusFilter]);
+    }, [search, astronautFilter, severityFilter, typeFilter, statusFilter]);
 
     useEffect(() => {
         loadAlerts();
@@ -270,6 +276,27 @@ export const AlertCenterPage: React.FC = () => {
 
             {/* Filters Bar */}
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                {/* Crew Member Filter */}
+                <select
+                    className="select"
+                    style={{
+                        minWidth: 175,
+                        padding: '0.45rem 0.6rem',
+                        fontSize: '0.85rem',
+                        borderColor: astronautFilter ? 'rgba(83, 231, 255, 0.4)' : undefined,
+                        color: astronautFilter ? 'var(--electric-cyan)' : undefined,
+                    }}
+                    value={astronautFilter}
+                    onChange={e => setAstronautFilter(e.target.value)}
+                >
+                    <option value="">All Crew Members</option>
+                    {allAstronauts.map(a => (
+                        <option key={a.astronaut_id} value={a.astronaut_id}>
+                            {a.name} ({a.astronaut_id})
+                        </option>
+                    ))}
+                </select>
+
                 {/* Search */}
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                     <Search size={14} style={{ position: 'absolute', left: 10, color: 'var(--text-muted)' }} />
