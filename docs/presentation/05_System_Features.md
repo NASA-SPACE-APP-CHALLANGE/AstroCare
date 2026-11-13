@@ -8,7 +8,7 @@ AstroCare unites 15 fully functional mission modules under a single cohesive arc
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                        ASTROCARE 15 MISSION MODULES                    │
+│                        ASTROCARE 16 MISSION MODULES                    │
 ├───────────────────────────────────┬────────────────────────────────────┤
 │ 1. Mission Overview               │ 9. Telemetry Historical Archive    │
 │ 2. Live Monitoring Console        │ 10. Data Import Studio             │
@@ -17,7 +17,7 @@ AstroCare unites 15 fully functional mission modules under a single cohesive arc
 │ 5. Alert & Triage Center          │ 13. NASA & CSA Research Hub        │
 │ 6. Astronaut Profile & Baselines  │ 14. Project Story & Architecture   │
 │ 7. Mission Shift Reports          │ 15. System Platform Settings       │
-│ 8. Physiological Data Simulator   │                                    │
+│ 8. Physiological Data Simulator   │ 16. Cross-Platform Desktop Client  │
 └───────────────────────────────────┴────────────────────────────────────┘
 ```
 

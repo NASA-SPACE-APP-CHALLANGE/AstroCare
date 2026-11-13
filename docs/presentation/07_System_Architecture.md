@@ -4,7 +4,7 @@
 
 ## 1. High-Level Architectural Diagram
 
-AstroCare utilizes a modern, modular, full-stack decoupled architecture. The frontend is built on **React 19** and **TypeScript** with Vite, while the backend leverages **FastAPI**, **SQLite**, and **scikit-learn**.
+AstroCare utilizes a modern, modular, dual-core architecture engineered for both autonomous spacecraft operations (edge computing) and ground mission control stations. The frontend is built on **React 19** and **TypeScript** with Vite, while the backend leverages a **Node.js 22 Native Telemetry Core** (zero external dependencies, built-in SQLite WAL mode) paired with an optional **FastAPI** Python service for Scikit-learn ML modeling, packaged across native desktop shells (**Electron 34+**, Linux `.deb`, Windows NSIS, macOS `.app`).
 
 ```mermaid
 graph TD
@@ -14,18 +14,22 @@ graph TD
         S3["CSV Historical Datasets<br/>(NASA HRP Baselines)"] --> INGEST
     end
 
-    subgraph Backend Core (FastAPI & Python)
-        INGEST --> DB[("SQLite Database<br/>(Readings, Alerts, Reports)")]
-        DB --> ML["AI Anomaly Engine<br/>(Isolation Forest Model)"]
-        ML --> RISK["Intelligent Risk Correlator<br/>(NASA Hazard Matrix)"]
-        RISK --> ALERT_SVC["Alert & Notification Service"]
-        DB --> REP_SVC["Mission Report Generator"]
+    subgraph Backend Core (Dual-Core Engine)
+        INGEST --> DB[("SQLite Database<br/>(Readings, Alerts, Reports, Baselines)")]
+        DB --> NODE_CORE["Node.js 22 Standalone Telemetry Core<br/>(Sub-ms REST, Built-in SQLite, Port 8000)"]
+        DB --> ML["FastAPI AI Anomaly Engine<br/>(Isolation Forest Model)"]
+        ML --> RISK["Intelligent Risk Correlator<br/>(NASA 5 Hazards Matrix)"]
+        NODE_CORE --> ALERT_SVC["Alert & Notification Service"]
+        NODE_CORE --> REP_SVC["Mission Report Generator"]
     end
 
-    subgraph Frontend Subsystem (React 19 & TypeScript)
-        API_LAYER["API & Resilience Layer<br/>(Auto-Failover / Client Simulator)"]
-        AUTH_CTX["Auth & Crew State<br/>(Astronaut Profile Context)"]
+    subgraph Client & Distribution Layer
+        API_LAYER["API Gateway & Resilience Layer"]
+        ELECTRON["Cross-Platform Desktop Shell<br/>(Linux .deb, Windows NSIS, macOS .app)"]
+        BROWSER["Web Browser Console<br/>(React 19 + TypeScript)"]
         
+        ELECTRON --> BROWSER
+        BROWSER --> API_LAYER
         API_LAYER --> DASH["Live Monitoring Console (/dashboard)"]
         API_LAYER --> ANALYTICS["Health Analytics (/dashboard/analytics)"]
         API_LAYER --> AI_PAGE["AI Insights & Risk Engine (/ai-insights)"]
@@ -36,7 +40,7 @@ graph TD
 
     ALERT_SVC -.-> API_LAYER
     RISK -.-> API_LAYER
-    DB -.-> API_LAYER
+    NODE_CORE -.-> API_LAYER
 ```
 
 ---

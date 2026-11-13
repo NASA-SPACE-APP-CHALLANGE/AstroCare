@@ -13,11 +13,12 @@ AstroCare is engineered with a modern, high-performance technology stack selecte
 │ Frontend Core     │ React 19, TypeScript 5.8, Vite 6.4, React Router 7 │
 │ Data Visualization│ Recharts 2.15, HTML5 Canvas (Starfield Engine)     │
 │ UI & Icons        │ Orbital Glass Design System (CSS3), Lucide React   │
-│ Backend Framework │ Python 3.13 / 3.14, FastAPI 0.115, Uvicorn 0.32    │
-│ Data Science / ML │ Scikit-learn 1.5, NumPy 2.0, Pandas 2.2            │
-│ Data Validation   │ Pydantic v2.9, TypeScript Interfaces               │
-│ Storage & ORM     │ SQLite 3, SQLAlchemy 2.0                          │
-│ Tooling & Build   │ Rollup, npm, oxlint, Git Checkpoint Versioning     │
+│ Standalone Backend│ Node.js 22 (node:sqlite, node:http, zero deps)     │
+│ Python ML Core    │ Python 3.11+, FastAPI 0.115, Scikit-learn 1.5      │
+│ Data Science / ML │ Isolation Forest, StandardScaler, NumPy 2.0        │
+│ Desktop Shell     │ Electron 34+, Linux .deb, Windows NSIS, macOS .app │
+│ Storage & Relational│ SQLite 3 (WAL Mode, Schema DDL & Crew Seeds)     │
+│ Tooling & Build   │ Rollup, npm monorepo, oxlint, Git Checkpointing    │
 └───────────────────┴────────────────────────────────────────────────────┘
 ```
 
