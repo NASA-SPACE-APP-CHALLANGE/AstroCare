@@ -1,30 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { DashboardSidebar } from '@/components/DashboardSidebar';
+import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 
 export const DashboardLayout: React.FC = () => {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
-            {/* Sidebar */}
-            <DashboardSidebar
-                collapsed={sidebarCollapsed}
-                onToggle={() => setSidebarCollapsed(c => !c)}
-            />
+        <>
+            {/* Unified Top Navigation */}
+            <Navbar />
 
-            {/* Main content */}
-            <main
-                style={{
-                    flex: 1,
-                    minWidth: 0,
-                    overflowX: 'hidden',
-                    position: 'relative',
-                    zIndex: 1,
-                }}
-            >
-                <Outlet />
-            </main>
-        </div>
+            {/* Main Page Layout matching AI Insights and site-wide container conventions */}
+            <div style={{ position: 'relative', zIndex: 1, paddingTop: 80, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <main className="container" style={{ paddingTop: '1rem', paddingBottom: '4rem', flex: 1, minWidth: 0 }}>
+                    <Outlet />
+                </main>
+                <Footer />
+            </div>
+        </>
     );
 };
+

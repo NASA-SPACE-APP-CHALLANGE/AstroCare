@@ -132,15 +132,8 @@ const App: React.FC = () => {
                 }
               />
 
-              {/* Dashboard with sidebar layout */}
-              <Route
-                path="/dashboard"
-                element={
-                  <div style={{ position: 'relative', zIndex: 1, paddingTop: 0 }}>
-                    <DashboardLayout />
-                  </div>
-                }
-              >
+              {/* Live Monitoring & Mission Console — Unified top navbar layout */}
+              <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<DashboardOverview />} />
                 <Route path="analytics" element={<HealthAnalyticsPage />} />
                 <Route path="alerts" element={<AlertCenterPage />} />
