@@ -229,8 +229,11 @@ export interface DatasetInfo {
 
 export interface HealthCheck {
     status: string;
-    app: string;
-    version: string;
-    database: string;
-    total_readings: number;
+    app?: string;
+    system?: string;
+    version?: string;
+    database?: string;
+    total_readings?: number;
+    astronauts_registered?: number;
+    timestamp?: string;
 }

@@ -138,3 +138,4 @@ export function logCompletedCountermeasure(astronautId: string, activityId: stri
         }
     }
 }
+

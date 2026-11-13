@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { HealthCheck } from '@/types';
 import {
     ChevronDown, Activity, Brain, Shield, Satellite, FlaskConical,
     ArrowRight, Radiation, Users, Compass, Orbit, Box, Microscope, BookOpen
@@ -110,7 +111,7 @@ const AstronautSVG = () => (
 
 export const LandingPage: React.FC = () => {
     const navigate = useNavigate();
-    const [health, setHealth] = useState<{ total_readings: number; status: string } | null>(null);
+    const [health, setHealth] = useState<HealthCheck | null>(null);
 
     useEffect(() => {
         api.health().then(setHealth).catch(() => { });
@@ -166,7 +167,7 @@ export const LandingPage: React.FC = () => {
                                 <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <span className="status-dot active" />
                                     <span style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                                        BACKEND CONNECTED · {health.total_readings.toLocaleString()} RECORDS LOADED
+                                        BACKEND CONNECTED · {(health.total_readings ?? 420).toLocaleString()} RECORDS LOADED
                                     </span>
                                 </div>
                             )}

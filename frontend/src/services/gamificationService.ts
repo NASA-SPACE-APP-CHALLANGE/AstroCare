@@ -202,3 +202,4 @@ export function saveGamificationState(state: GamificationState): void {
         console.warn('Failed saving gamification state', err);
     }
 }
+

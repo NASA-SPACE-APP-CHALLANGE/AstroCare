@@ -234,3 +234,4 @@ export function generateWhatShouldIDoNowGuide(metricName: string, value: number 
         whenToContactFlightSurgeon: 'Escalate to Ground Flight Surgeon if parameter does not return to nominal range within 2 hours.',
     };
 }
+

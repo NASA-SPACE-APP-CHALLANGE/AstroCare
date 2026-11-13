@@ -598,3 +598,4 @@ export function recordQuickCheckIn(
     saveAstronautHealthState(state);
     return state;
 }
+

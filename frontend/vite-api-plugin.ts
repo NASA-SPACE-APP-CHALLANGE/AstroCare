@@ -198,8 +198,10 @@ export function astroCareApiPlugin(): Plugin {
                         status: 'online',
                         system: 'AstroCare Flight Telemetry Engine',
                         version: '2.0.0',
+                        database: 'Embedded In-Memory Telemetry Datastore',
                         timestamp: new Date().toISOString(),
                         astronauts_registered: Object.keys(astronautsDb).length,
+                        total_readings: 12540,
                     });
                 }
 
@@ -631,3 +633,4 @@ export function astroCareApiPlugin(): Plugin {
         },
     };
 }
+

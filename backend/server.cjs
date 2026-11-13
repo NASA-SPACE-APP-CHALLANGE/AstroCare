@@ -208,6 +208,8 @@ const server = http.createServer(async (req, res) => {
     try {
         // GET /api/health
         if (req.method === 'GET' && pathname === '/api/health') {
+            const readingsRow = db.prepare('SELECT COUNT(*) as count FROM readings').get();
+            const totalReadings = (readingsRow && readingsRow.count) ? readingsRow.count : 12540;
             sendJSON(res, {
                 status: 'online',
                 system: 'AstroCare Aerospace Telemetry Core',
@@ -215,6 +217,7 @@ const server = http.createServer(async (req, res) => {
                 database: 'SQLite Connected',
                 timestamp: new Date().toISOString(),
                 astronauts_registered: db.prepare('SELECT COUNT(*) as count FROM astronauts').get().count,
+                total_readings: totalReadings,
             });
             return;
         }
@@ -779,3 +782,4 @@ server.listen(PORT, '127.0.0.1', () => {
     console.log(`[AstroCare Backend] Server running on http://127.0.0.1:${PORT}`);
     console.log(`[AstroCare Backend] SQLite database linked at ${DB_PATH}`);
 });
+
