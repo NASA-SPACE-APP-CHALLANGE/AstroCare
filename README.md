@@ -19,6 +19,11 @@
 
 ---
 
+## 🚀 LIVE DEMO
+🔗 **Live Project:** [Click Here](https://astrocare-frontend-boof.onrender.com/)
+
+---
+
 ## 🛰️ 1. Project Overview & Problem Statement
 
 Astronauts on long-duration exploration missions (e.g., Artemis lunar surface transits and crewed Mars expeditions) encounter prolonged microgravity, cosmic ionizing radiation, acoustic confinement, and isolated habitats. These spaceflight stressors induce cardiovascular deconditioning, cephalad fluid redistribution, circadian disruptions, bone-muscle density loss, and Spaceflight Associated Neuro-ocular Syndrome (SANS).
